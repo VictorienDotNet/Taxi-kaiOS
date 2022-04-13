@@ -1,0 +1,32 @@
+{
+  "version": "1.0.1",
+  "name": "Taxis",
+  "description": "KaiOS users can now find taxis on their phones",
+  "type": "web",
+  "launch_path": "/index.html",
+  "origin": "app://kaios.taxi/app",
+  "icons": {
+    "56": "/assets/appicon@56w.png",
+    "112": "/assets/appicon@112w.png",
+    "128": "/assets/appicon@128w.png"
+  },
+  "developer": {
+    "name": "Victorien",
+    "url": "https://victorien.net"
+  },
+  "locales": {
+    "en-GB": {
+      "name": "Taxi",
+      "subtitle": "Find taxi ranks nearby",
+      "description": "KaiOS users can now find taxis on their phones."
+    }
+  },
+  "default_locale": "en-GB",
+  "permissions": {
+    "geolocation": {
+      "description": "Required to find taxi ranks from your location"
+    }
+  },
+  "fullscreen": "true",
+  "orientation": "portrait"
+}

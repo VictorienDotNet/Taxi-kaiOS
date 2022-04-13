@@ -1,0 +1,41 @@
+.button {
+	position: absolute;
+	z-index: 2;
+	vertical-align: middle;
+	right: 12px;
+	top: 8px;
+	padding: 8px;
+
+	background-color: #fff;
+	border-radius: 4px;
+
+	font-size: 0.75em;
+	line-height: 1.2em;
+	text-transform: uppercase;
+
+	animation-name: appear;
+	animation-duration: 180ms;
+	animation-timing-function: ease-out;
+	animation-delay: 15s;
+	animation-fill-mode: forwards;
+	opacity: 0;
+}
+
+.button span {
+	display: inline-block;
+	min-width: 1.25em;
+	padding: 0 4px;
+	border: 1px solid rgba(0, 0, 0, 0.9); /*@color-text*/
+	border-radius: 2px;
+
+	text-align: center;
+}
+
+@keyframes appear {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}

@@ -1,0 +1,45 @@
+.Card {
+	z-index: 1;
+	padding: 16px 16px 0 16px;
+	/*margin-top: -8px;*/
+	background-color: #fff;
+	border-radius: 8px 8px 0 0;
+}
+
+/* Text Systems */
+.Card h2 {
+	font-weight: 700;
+}
+
+.Card p:only-child {
+	text-align: center;
+	padding-top: 16px;
+	padding-bottom: 16px;
+}
+
+.subheader {
+	font-size: 0.75em;
+	color: rgba(0, 0, 0, 0.6);
+}
+
+/* Pagging Systemes */
+
+.pagging {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 4px;
+}
+
+.pagging > * {
+	width: 4px;
+	height: 4px;
+	margin: 0 2px;
+
+	border-radius: 50%;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.pagging > *[nav-selected="true"] {
+	background-color: rgb(0, 90, 224);
+}
