@@ -1,40 +1,49 @@
 {
-	"name": "adding-env-var",
-	"version": "1.0.2",
-	"keywords": [],
-	"description": "The initial commit don't have ENV variables. We will add a production and devellopement environnement with their variables.",
-	"private": true,
-	"dependencies": {
-		"amplitude-js": "8.17.0",
-		"leaflet": "1.7.1",
-		"react": "17.0.2",
-		"react-dom": "17.0.2",
-		"react-leaflet": "3.2.2",
-		"react-scripts": "3.0.1"
-	},
-	"scripts": {
-		"start": "react-scripts start",
-		"build": "react-scripts build",
-		"build:alpha": "sh -ac '. .env; react-scripts build'",
-		"test": "react-scripts test",
-		"eject": "react-scripts eject"
-	},
-	"babel": {
-		"presets": ["@babel/preset-env", "@babel/preset-react"],
-		"plugins": ["@babel/plugin-proposal-nullish-coalescing-operator"]
-	},
-	"eslintConfig": {
-		"extends": "react-app"
-	},
-	"browserslist": {
-		"production": [">0.2%", "not dead", "not op_mini all"],
-		"development": [
-			"last 1 chrome version",
-			"last 1 firefox version",
-			"last 1 safari version"
-		]
-	},
-	"devDependencies": {
-		"@babel/plugin-proposal-nullish-coalescing-operator": "^7.16.0"
-	}
+  "name": "repair-app-icons",
+  "version": "1.0.2",
+  "keywords": [],
+  "description": "",
+  "private": true,
+  "dependencies": {
+    "amplitude-js": "8.17.0",
+    "leaflet": "1.7.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-leaflet": "3.2.2",
+    "react-scripts": "3.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "build:alpha": "sh -ac '. .env; react-scripts build'",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-nullish-coalescing-operator"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.16.0"
+  }
 }
