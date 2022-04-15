@@ -29,7 +29,7 @@ export default function App() {
 		switch (datasets.status) {
 			case "Init":
 				// At start, we are initializing Amplitude,
-				amplitude.getInstance().init("9c3ccad6dab09e7a67ec8c9238791c61");
+				amplitude.getInstance().init(process.env.REACT_APP_STATS_APIKEY);
 				amplitude.getInstance().logEvent("Open App");
 				//console.log("Open App");
 				break;
@@ -155,7 +155,8 @@ export default function App() {
 	// we request taxi rank on his position.
 	const getData = (coords) => {
 		fetch(
-			"https://kaios.taxi/api/nearby.php?lat=" +
+			process.env.REACT_APP_API +
+				"?lat=" +
 				coords.latitude +
 				"&lng=" +
 				coords.longitude
