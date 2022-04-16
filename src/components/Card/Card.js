@@ -22,7 +22,9 @@ const Text = ({ status }) => {
 		case "Located":
 			return <p>Searching available options around…</p>;
 		case "NotLocated":
-			return <p>We didn't success to get your position.</p>;
+			return (
+				<p>To find you on the map, we need permission to use your location.</p>
+			);
 		case "NoResult":
 			return <p>Unfortunately, we found any options around.</p>;
 		case "Error":

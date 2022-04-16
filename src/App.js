@@ -261,12 +261,24 @@ export default function App() {
 			case "NotLocated":
 				return [
 					{
-						name: "Retry",
+						name: "Open Settings",
 						fct: () => {
-							setData((prev) => ({
-								...prev,
-								status: "Init"
-							}));
+							if (typeof MozActivity === "function") {
+								// eslint-disable-next-line
+								let activity = new MozActivity({
+									name: "configure",
+									data: {
+										target: "device",
+										section: "appPermissions"
+									}
+								});
+								activity.onsuccess = function () {
+									console.log("successfully");
+								};
+								activity.onerror = function () {
+									console.log("The activity encounter en error: " + this.error);
+								};
+							}
 						}
 					}
 				];
