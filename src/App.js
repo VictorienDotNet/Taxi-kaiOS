@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Softkey, Map, MyPosition, Rank, AdsButton, Card } from "./components";
 import amplitude from "amplitude-js";
 import { useNavigation } from "./hooks";
+import { version } from "/package.json";
 
 export default function App() {
 	/* DATA TREE AND APP STATUS */
@@ -30,7 +31,7 @@ export default function App() {
 			case "Init":
 				// At start, we are initializing Amplitude,
 				amplitude.getInstance().init(process.env.REACT_APP_STATS_APIKEY);
-				amplitude.getInstance().logEvent("Open App");
+				amplitude.getInstance().logEvent("Open App", { Version: version });
 				//console.log("Open App");
 				break;
 			case "Located":
@@ -44,32 +45,36 @@ export default function App() {
 				amplitude.getInstance().logEvent("Service Request", {
 					Quantity: 0,
 					Latitude: datasets.coords[0],
-					Longitude: datasets.coords[1]
+					Longitude: datasets.coords[1],
+					Version: version
 				});
 				//console.log("Service Request");
 				break;
 			case "NotLocated":
-				amplitude.getInstance().logEvent("Error");
+				amplitude.getInstance().logEvent("Error", { Version: version });
 				//console.log("Error");
 				break;
 			case "Error":
 				amplitude.getInstance().logEvent("Error", {
 					Latitude: datasets.coords[0],
-					Longitude: datasets.coords[1]
+					Longitude: datasets.coords[1],
+					Version: version
 				});
 				//console.log("Error");
 				break;
 			case "Map":
 				amplitude.getInstance().logEvent("Map", {
 					Latitude: datasets.coords[0],
-					Longitude: datasets.coords[1]
+					Longitude: datasets.coords[1],
+					Version: version
 				});
 				//console.log("Error");
 				break;
 			case "Call":
 				amplitude.getInstance().logEvent("Call", {
 					Latitude: datasets.coords[0],
-					Longitude: datasets.coords[1]
+					Longitude: datasets.coords[1],
+					Version: version
 				});
 				//console.log("Error");
 				break;
