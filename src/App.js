@@ -266,7 +266,7 @@ export default function App() {
 			case "NotLocated":
 				return [
 					{
-						name: "Open Settings",
+						name: "Settings",
 						fct: () => {
 							if (typeof MozActivity === "function") {
 								// eslint-disable-next-line

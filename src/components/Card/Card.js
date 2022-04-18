@@ -23,7 +23,10 @@ const Text = ({ status }) => {
 			return <p>Searching available options around…</p>;
 		case "NotLocated":
 			return (
-				<p>To find you on the map, we need permission to use your location.</p>
+				<p>
+					<i>Taxis</i> needs your geolocation permission to find you on the map.
+					Please grant access.
+				</p>
 			);
 		case "NoResult":
 			return <p>Unfortunately, we found any options around.</p>;

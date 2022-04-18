@@ -21,3 +21,7 @@ body,
 	/* Look and feel */
 	background-color: rgb(230, 228, 224);
 }
+
+i {
+	font-style: italic;
+}
