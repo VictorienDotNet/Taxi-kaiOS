@@ -1,11 +1,12 @@
 {
-  "name": "update-text-from-not-located-screen",
+  "name": "add-install-event",
   "version": "1.0.2",
   "keywords": [],
   "description": "",
   "private": true,
   "dependencies": {
     "amplitude-js": "8.17.0",
+    "idb-keyval": "6.0.3",
     "leaflet": "1.7.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",

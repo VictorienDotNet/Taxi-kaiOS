@@ -3,7 +3,13 @@ import { useState, useEffect, useRef } from "react";
 import { Softkey, Map, MyPosition, Rank, AdsButton, Card } from "./components";
 import amplitude from "amplitude-js";
 import { useNavigation } from "./hooks";
-import { version } from "/package.json";
+import { set, get } from "idb-keyval";
+
+/* DEFINE APP VERSION */
+// The import doesn't work with the build
+//import { version } from "/package.json";
+//We are force to define manuallt for now
+const version = "1.0.2";
 
 export default function App() {
 	/* DATA TREE AND APP STATUS */
@@ -24,15 +30,65 @@ export default function App() {
 	// Will be used to store the index of the selected result
 	const [current, setNavigation] = useNavigation(0);
 
+	/* INSTALLATION and OPENNING */
+	// At Launch, we are tracking new installion and openning
+	useEffect(() => {
+		amplitude.getInstance().init(process.env.REACT_APP_STATS_APIKEY);
+		get("taxi")
+			//if it's success, it's an openning
+			.then((data) => {
+				//but to be sure, we are checking if a creating date it's here
+				if (data.created) {
+					amplitude.getInstance().logEvent("Open App", { Version: version });
+					console.log("Open App");
+				} else {
+					//We are seting up a database for the next openning
+					set("taxi", { created: Date.now() })
+						.then((data) => {
+							amplitude.getInstance().logEvent("Install App", {
+								Version: version,
+								State: "Completed"
+							});
+							console.log("Install App");
+						})
+						.cath((err) => {
+							amplitude.getInstance().logEvent("Install App", {
+								Version: version,
+								State: "Error",
+								Error: err
+							});
+							console.log("Erro Install App");
+						});
+				}
+			})
+			//if it's fail, it's an installation
+			.catch((err) => {
+				//We are seting up a database for the next openning
+				set("taxi", { created: Date.now() })
+					.then((data) => {
+						amplitude.getInstance().logEvent("Install App", {
+							Version: version,
+							State: "Completed"
+						});
+						console.log("Install App");
+					})
+					.cath((err) => {
+						amplitude.getInstance().logEvent("Install App", {
+							Version: version,
+							State: "Error",
+							Error: err
+						});
+						console.log("Erro Install App");
+					});
+			});
+	}, []);
+
 	/* TRACKING STATES */
 	// We are using amplitude to store user events.
 	useEffect(() => {
 		switch (datasets.status) {
 			case "Init":
-				// At start, we are initializing Amplitude,
-				amplitude.getInstance().init(process.env.REACT_APP_STATS_APIKEY);
-				amplitude.getInstance().logEvent("Open App", { Version: version });
-				//console.log("Open App");
+				//We don't trigger event since it's same as Open App or Install App
 				break;
 			case "Located":
 				//We don't trigger event once the user is located to save events
@@ -48,11 +104,11 @@ export default function App() {
 					Longitude: datasets.coords[1],
 					Version: version
 				});
-				//console.log("Service Request");
+				console.log("Service Request");
 				break;
 			case "NotLocated":
 				amplitude.getInstance().logEvent("Error", { Version: version });
-				//console.log("Error");
+				console.log("Error");
 				break;
 			case "Error":
 				amplitude.getInstance().logEvent("Error", {
@@ -60,7 +116,7 @@ export default function App() {
 					Longitude: datasets.coords[1],
 					Version: version
 				});
-				//console.log("Error");
+				console.log("Error");
 				break;
 			case "Map":
 				amplitude.getInstance().logEvent("Map", {
@@ -68,7 +124,7 @@ export default function App() {
 					Longitude: datasets.coords[1],
 					Version: version
 				});
-				//console.log("Error");
+				console.log("Map");
 				break;
 			case "Call":
 				amplitude.getInstance().logEvent("Call", {
@@ -76,7 +132,7 @@ export default function App() {
 					Longitude: datasets.coords[1],
 					Version: version
 				});
-				//console.log("Error");
+				console.log("Call");
 				break;
 			default:
 				break;
@@ -132,7 +188,6 @@ export default function App() {
 	// Once we will know if the user gave his geolocation,
 	// we will catch it with getCurrentPosition.
 	const getCurrentPosition = () => {
-		console.log("Get Position");
 		navigator.geolocation.getCurrentPosition(
 			function (position) {
 				//Store The Data
@@ -220,7 +275,6 @@ export default function App() {
 						name: phone ? "Call" : "",
 						fct: phone
 							? () => {
-									console.log("tel:" + phone);
 									window.location = "tel:" + phone;
 									setData((prev) => ({
 										...prev,
