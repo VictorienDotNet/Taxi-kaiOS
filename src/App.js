@@ -72,7 +72,7 @@ export default function App() {
 						});
 						console.log("Install App");
 					})
-					.cath((err) => {
+					.catch((err) => {
 						amplitude.getInstance().logEvent("Install App", {
 							Version: version,
 							State: "Error",
