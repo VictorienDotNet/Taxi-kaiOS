@@ -9,7 +9,7 @@ import { set, get } from "idb-keyval";
 // The import doesn't work with the build
 //import { version } from "/package.json";
 //We are force to define manuallt for now
-const version = "1.0.2";
+const version = "1.0.3";
 
 export default function App() {
 	/* DATA TREE AND APP STATUS */
@@ -40,7 +40,6 @@ export default function App() {
 				//but to be sure, we are checking if a creating date it's here
 				if (data.created) {
 					amplitude.getInstance().logEvent("Open App", { Version: version });
-					console.log("Open App");
 				} else {
 					//We are seting up a database for the next openning
 					set("taxi", { created: Date.now() })
@@ -49,7 +48,6 @@ export default function App() {
 								Version: version,
 								State: "Completed"
 							});
-							console.log("Install App");
 						})
 						.catch((err) => {
 							amplitude.getInstance().logEvent("Install App", {
@@ -57,7 +55,6 @@ export default function App() {
 								State: "Error",
 								Error: err
 							});
-							console.log("Erro Install App");
 						});
 				}
 			})
@@ -70,7 +67,6 @@ export default function App() {
 							Version: version,
 							State: "Completed"
 						});
-						console.log("Install App");
 					})
 					.catch((err) => {
 						amplitude.getInstance().logEvent("Install App", {
@@ -78,7 +74,6 @@ export default function App() {
 							State: "Error",
 							Error: err
 						});
-						console.log("Erro Install App");
 					});
 			});
 	}, []);
@@ -94,8 +89,6 @@ export default function App() {
 				//We don't trigger event once the user is located to save events
 				break;
 			case "Success":
-				//console.log("Service Request");
-
 				break;
 			case "NoResult":
 				amplitude.getInstance().logEvent("Service Request", {
@@ -104,11 +97,11 @@ export default function App() {
 					Longitude: datasets.coords[1],
 					Version: version
 				});
-				console.log("Service Request");
+
 				break;
 			case "NotLocated":
 				amplitude.getInstance().logEvent("Error", { Version: version });
-				console.log("Error");
+
 				break;
 			case "Error":
 				amplitude.getInstance().logEvent("Error", {
@@ -116,7 +109,7 @@ export default function App() {
 					Longitude: datasets.coords[1],
 					Version: version
 				});
-				console.log("Error");
+
 				break;
 			case "Map":
 				amplitude.getInstance().logEvent("Map", {
@@ -124,7 +117,7 @@ export default function App() {
 					Longitude: datasets.coords[1],
 					Version: version
 				});
-				console.log("Map");
+
 				break;
 			case "Call":
 				amplitude.getInstance().logEvent("Call", {
@@ -132,7 +125,7 @@ export default function App() {
 					Longitude: datasets.coords[1],
 					Version: version
 				});
-				console.log("Call");
+
 				break;
 			default:
 				break;
@@ -188,18 +181,22 @@ export default function App() {
 	// Once we will know if the user gave his geolocation,
 	// we will catch it with getCurrentPosition.
 	const getCurrentPosition = () => {
-		navigator.geolocation.getCurrentPosition(
+		const IDWatch = navigator.geolocation.watchPosition(
+			//if it's a success
 			function (position) {
-				//Store The Data
+				//We Stop the Watch function
+				navigator.geolocation.clearWatch(IDWatch);
+				//We Store The Data and Trigger the next states
 				setData((prev) => ({
 					...prev,
 					status: "Located",
 					coords: [position.coords.latitude, position.coords.longitude]
 				}));
 
-				//Get the taxi Ranks dataset
+				//We requesting taxi Ranks from the API
 				getData(position.coords);
 			},
+			//if it's a fail
 			function (error) {
 				if (error.code === error.PERMISSION_DENIED) {
 					setData((prev) => ({
@@ -207,6 +204,12 @@ export default function App() {
 						status: "NotLocated"
 					}));
 				}
+			},
+			//We setup a Timeout in case of an unlimited loop of searching position
+			{
+				enableHighAccuracy: true,
+				timeout: 10000,
+				maximumAge: 60000
 			}
 		);
 	};
@@ -226,7 +229,6 @@ export default function App() {
 				(request) => {
 					//Then, if we got results…
 					if (request.results != null) {
-						console.log("Service Request");
 						//We Track the Request
 						amplitude.getInstance().logEvent("Service Request", {
 							Quantity: request.results.length,
@@ -332,10 +334,10 @@ export default function App() {
 									}
 								});
 								activity.onsuccess = function () {
-									console.log("successfully");
+									//success
 								};
 								activity.onerror = function () {
-									console.log("The activity encounter en error: " + this.error);
+									//error
 								};
 							}
 						}
