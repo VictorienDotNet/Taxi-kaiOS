@@ -2,4 +2,5 @@
   "files.associations": {
     "*.webapp": "json",
   },
+  "editor.wordWrap": "on"
 }

@@ -141,21 +141,9 @@ export default function App() {
 	}, [datasets]);
 
 	const onKeyDown = (evt) => {
-		if (evt.key === "ArrowUp" && datasets.status === "Map") {
-			map.current.panBy([0, -30], { animate: false });
-		} else if (evt.key === "ArrowDown" && datasets.status === "Map") {
-			map.current.panBy([0, 30], { animate: false });
-		} else if (evt.key === "ArrowLeft") {
+		if (evt.key === "ArrowLeft" || evt.key === "ArrowRight") {
 			if (datasets.status !== "Map") {
 				setNavigation(evt.key);
-			} else {
-				map.current.panBy([-30, 0], { animate: false });
-			}
-		} else if (evt.key === "ArrowRight") {
-			if (datasets.status !== "Map") {
-				setNavigation(evt.key);
-			} else {
-				map.current.panBy([30, 0], { animate: false });
 			}
 		} else if (evt.key === "Backspace") {
 			if (datasets.status === "Map") {
@@ -167,10 +155,6 @@ export default function App() {
 			} else {
 				return;
 			}
-		} else if (evt.key === "1") {
-			map.current.zoomIn && map.current.zoomIn();
-		} else if (evt.key === "3") {
-			map.current.zoomIn && map.current.zoomOut();
 		} else {
 			return;
 		}
@@ -379,8 +363,11 @@ export default function App() {
 	return (
 		<>
 			<AdsButton />
-
-			<Map center={datasets.coords} ref={map}>
+			<Map
+				center={datasets.coords}
+				ref={map}
+				fullscreen={datasets.status === "Map"}
+			>
 				{datasets.coords && <MyPosition position={datasets.coords} />}
 				{datasets.ranks && (
 					<Rank

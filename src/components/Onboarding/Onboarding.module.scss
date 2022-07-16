@@ -1,0 +1,47 @@
+.onboarding {
+	// Position
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 3;
+	// Layout
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	padding: 12px;
+	// Style
+	background-color: #FFF;
+
+
+	p{
+		flex:1;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		text-align: center;
+	}
+
+	button{
+		// Layout
+		display: block;
+		padding: 8px 12px;
+		// Style
+		border-radius: 8px;
+		background-color: rgba(0, 90, 224, 0);
+		//Text
+		color: #005AE0;
+		font-weight: 600; //Should be 700 (bold), but too strong
+
+		&:focus{
+			background-color: rgba(0, 90, 224, 0.12);
+		}
+
+		&[disabled]{
+			color:#989898;
+			&:focus{
+				background-color: rgba(152, 152, 152, 0.12);
+			}
+		}
+	}
+}
