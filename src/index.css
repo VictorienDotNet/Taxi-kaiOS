@@ -61,7 +61,7 @@ i {
 			Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 	}
 
-	@media (orientation: landscape) {
+	@media (orientation: landscape) and (max-height: 360px) {
 		#root {
 			max-width: 320px;
 			max-height: 240px;
