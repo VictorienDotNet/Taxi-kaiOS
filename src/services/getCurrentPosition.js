@@ -6,7 +6,7 @@ export const getCurrentPosition = (success, denied, error) => {
 		function (position) {
 			// IF IT'S A SUCCESS
 			//We callback the function related to success
-			success();
+			success(position);
 			//We Stop to watch the position
 			stop();
 		},
@@ -18,10 +18,10 @@ export const getCurrentPosition = (success, denied, error) => {
 
 			if (err.code === err.PERMISSION_DENIED) {
 				stop();
-				denied();
+				denied(err);
 			} else if (failcount > 6) {
 				stop();
-				error();
+				error(err);
 			}
 		},
 		{

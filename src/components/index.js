@@ -4,3 +4,4 @@ export * from "./Map/Markers";
 export * from "./Ads/Button";
 export * from "./Card/Card";
 export * from "./Onboarding/Onboarding";
+export * from "./Results/Results";
