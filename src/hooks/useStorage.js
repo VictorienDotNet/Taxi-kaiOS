@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { set, get } from "idb-keyval";
-import { version } from "/package.json";
 import { compare } from "compare-versions";
+import { hit } from "../tools";
+const version = process.env.REACT_APP_V;
 //import useAnalytics from "./useAnalytics";
 
 export const useStorage = () => {
-	let [datasets, setDatasets] = useState(null);
+	let [datasets, setDatasets] = useState(false);
 
 	useEffect(() => {
 		get("taxi")
@@ -45,7 +46,9 @@ export const useStorage = () => {
 				//Store User's position
 				coords: null,
 				//Store data from Taxi API
-				ranks: null
+				ranks: null,
+				//Store the index of ranks
+				index: 0
 			}
 		};
 		//We are storing offline the Datasets through the set function
@@ -54,6 +57,7 @@ export const useStorage = () => {
 				//Successfull installation
 				//We sent back the datasets to the app
 				setDatasets(newDatasets.datasets);
+				hit("Install App");
 			})
 			.catch((err) => {
 				//Unsuccessfull installation
@@ -72,6 +76,7 @@ export const useStorage = () => {
 			.then(() => {
 				//Successfull installation
 				setDatasets(updatedDatasets.datasets);
+				hit("Open App", { type: "update" });
 			})
 			.catch((err) => {
 				//Unsuccessfull installation
@@ -101,6 +106,7 @@ export const useStorage = () => {
 			.then(() => {
 				//Successfull installation
 				setDatasets(updatedDatasets.datasets);
+				hit("Open App", { type: "migrating" });
 			})
 			.catch((err) => {
 				//Unsuccessfull installation
@@ -128,16 +134,57 @@ export const useStorage = () => {
 
 	// We open the app without performing any change on the offline data. However, in the special case that the user will not complete the onboarding, we reset the "target" on Onboarding.
 	const open = (data) => {
+		//Previously, we was updating the datasets while openning. We was setting up the target as Onboarding or Results depending on the availibility of the coords. We don't wanted to bring back people on Choose On Map if they didn't finish the Onboarding. We remove that because of an expected behaviour.
+		/*let d = {
+			...data.datasets,
+			target: data.datasets.coords ? "Results" : "Onboarding"
+		};/**/
 		let d = data.datasets;
-		setDatasets({
-			...d,
-			target: d.coords ? d.target : "Onboarding"
-		});
-	};
-	//Clear it's only use in case of maintenance
-	const clear = () => {
-		set("taxi", {});
+
+		hit("Open App");
+		setDatasets(d);
 	};
 
-	return [datasets, updateDatasets, clear];
+	return [datasets, updateDatasets];
+};
+
+/*DEV FUNCTIONS*/
+//The function below is just use for devellopement purpose to re-install the datasets or look into it during devellopement
+
+window.dev = {
+	//Clear the database to perform a installation
+	clear: () => {
+		set("taxi", {});
+		document.location.reload();
+	},
+	//Simulate a migration of Data
+	migrate: () => {
+		set("taxi", { created: 1659000039771 });
+		document.location.reload();
+	},
+	//Simulate a update of Data
+	update: () => {
+		set("taxi", {
+			version: "1.0.2",
+			createdAt: Date.now(),
+			datasets: {
+				//Which view to target
+				target: "Onboarding",
+				//Global resume of the situation
+				status: null,
+				//Store User's position
+				coords: null,
+				//Store data from Taxi API
+				ranks: null,
+				//Store the index of ranks
+				index: 0
+			}
+		});
+		document.location.reload();
+	},
+	get: () => {
+		get("taxi").then((data) => {
+			console.log(data);
+		});
+	}
 };

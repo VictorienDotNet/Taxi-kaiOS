@@ -1,25 +1,61 @@
 .Card {
 	z-index: 1;
-	padding: 16px 16px 0 16px;
+	padding: 8px 12px 0 12px;
 	/*margin-top: -8px;*/
 	background-color: #fff;
 	border-radius: 8px 8px 0 0;
 }
 
+.Card p {
+	border-radius: 8px;
+	background-color: rgba(199, 199, 199, 0.18);
+}
+.Card p:empty {
+	display: none;
+}
+
 /* Text Systems */
 .Card h2 {
-	font-weight: 700;
+	font-weight: normal;
 }
 
 .Card p:only-child {
+	margin-top: 8px;
 	text-align: center;
-	padding-top: 16px;
-	padding-bottom: 16px;
+	padding: 16px;
 }
 
 .subheader {
 	font-size: 0.75em;
+	line-height: 1em;
+	vertical-align: middle;
 	color: rgba(0, 0, 0, 0.6);
+}
+.rank {
+	position: relative;
+	/*I didn't success to align the subheader. I adujusted the padding optically to make vertical aligned*/
+	padding: 10px 16px 12px 44px;
+	line-height: 1em;
+
+	border-radius: 4px;
+	background-color: rgba(255, 191, 0, 0.16);
+}
+
+.rank:before {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	left: 12px;
+
+	width: 24px;
+	height: 24px;
+
+	content: "";
+	border-radius: 4px;
+	background-color: rgb(255, 191, 0);
+	background-image: url(./assets/T.svg);
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
 /* Pagging Systemes */
@@ -28,7 +64,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	margin-bottom: 4px;
+	margin-bottom: 8px;
 }
 
 .pagging > * {

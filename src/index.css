@@ -21,6 +21,10 @@ body,
 	background-color: rgb(230, 228, 224);
 }
 
+#root > div {
+	overflow: hidden;
+}
+
 i {
 	font-style: italic;
 }

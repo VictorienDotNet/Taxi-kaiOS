@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "%REACT_APP_V%",
   "name": "Taxis",
   "description": "Find the closest taxi ranks. Get local taxi numbers.",
   "type": "web",

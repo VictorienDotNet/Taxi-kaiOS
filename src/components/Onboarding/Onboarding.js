@@ -1,72 +1,82 @@
 import React, { useState } from "react";
 import css from "./Onboarding.module.scss";
-import { getCurrentPosition } from "../../services/getCurrentPosition";
-import { openSettings } from "../../services/openSettings";
-import { useNavigation } from "../../hooks/useNewNavigation";
+import { getCurrentPosition, normalizeCoords, openSettings } from "../../tools";
+import { useNavigation } from "../../hooks";
+import { Earth } from "./Earth";
 
 export function Onboarding(props) {
-	const [current, next] = useState("Initial");
-	const { children, update } = props;
+	const [current, next] = useState("Choose Location");
+	const { update } = props;
 
 	/* ARROW NAVIGATION */
 	// Will be used to store the index of the selected result
-	const [nav, setNavigation] = useNavigation(0);
+	useNavigation();
 
 	/**
 	 * STATE MANAGEMENT
 	 * We have four states : Initial, Loading, Denied and Error
 	 */
 
-	if (current === "Retrieving") {
+	if (current === "Waiting Location") {
 		getCurrentPosition(
 			(position) => {
 				update({
-					coords: [position.coords.latitude, position.coords.longitude]
+					coords: normalizeCoords(position.coords, "GPS"),
+					status: "Located",
+					ranks: null,
+					index: 0
 				});
-				next("Success");
+				next("Got Location");
 			},
-			() => next("Denied"),
-			() => next("Error")
+			() => next("Handle Denied Location"),
+			() => next("Handle Location Error")
 		);
 	}
 
 	const GoToMap = () => {
-		console.log("We are going to Map view.");
 		update({ target: "Map" });
 	};
 
 	const GoToResults = () => {
-		console.log("We are going to Results view.");
 		update({ target: "Results" });
 	};
 
 	switch (current) {
-		case "Initial":
+		case "Learn Basic":
 			return (
 				<Wrapper>
-					<p>Welcome! Where do you want to find taxis?</p>
-					<button onClick={() => next("Retrieving")}>Near Me</button>
+					<p>Find easily taxi stand around.</p>
+					<button onClick={() => next("Choose Location")}>Continue</button>
+				</Wrapper>
+			);
+		case "Choose Location":
+			return (
+				<Wrapper>
+					<p>Where do you want to find taxis?</p>
+					<button onClick={() => next("Waiting Location")}>Near Me</button>
 					<button onClick={GoToMap}>Choose On Map</button>
 				</Wrapper>
 			);
-		case "Retrieving":
+		case "Waiting Location":
 			return (
 				<Wrapper>
-					<p>We are retrieving location…</p>
+					<p>Searching the stars for your location…</p>
 					<button disabled>Near Me</button>
 					<button disabled>Choose On Map</button>
 				</Wrapper>
 			);
-		case "Success":
+		case "Got Location":
 			setTimeout(() => {
 				GoToResults();
 			}, 1000);
 			return (
 				<Wrapper>
 					<p>We found you.</p>
+					<button disabled>Near Me</button>
+					<button disabled>Choose On Map</button>
 				</Wrapper>
 			);
-		case "Denied":
+		case "Handle Denied Location":
 			return (
 				<Wrapper>
 					<p>
@@ -88,5 +98,10 @@ export function Onboarding(props) {
 }
 
 const Wrapper = ({ children, props }) => {
-	return <div className={css.onboarding}>{children}</div>;
+	return (
+		<div className={css.onboarding}>
+			<Earth />
+			{children}
+		</div>
+	);
 };

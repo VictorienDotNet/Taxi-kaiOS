@@ -1,6 +1,6 @@
 import React from "react";
 import css from "./Card.module.css";
-import { getDistance } from "../../services/geometry.js";
+import { getDistance } from "../../tools/geometry.js";
 
 export const Card = ({ content, position, index, visibility }) => {
 	return (
@@ -21,6 +21,8 @@ const Text = ({ status }) => {
 			return <p>Requesting your position…</p>;
 		case "Located":
 			return <p>Searching available options around…</p>;
+		case "Choose On Map":
+			return <p>Searching available options around…</p>;
 		case "NotLocated":
 			return (
 				<p>
@@ -29,15 +31,15 @@ const Text = ({ status }) => {
 				</p>
 			);
 		case "NoResult":
-			return <p>Unfortunately, we found any options around.</p>;
+			return <p>We didn't find any taxi rank around.</p>;
 		case "Error":
-			return <p>Internet is off. Check your connection and retry.</p>;
+			return <p>Internet seems to be off. Check your connection and retry.</p>;
 		default:
 			return <p>Looks like there was a problem. Restart the app.</p>;
 	}
 };
 
-const Item = ({ content, position, index }) => {
+const Item = ({ content, position, index = 0 }) => {
 	var dots = content.map((e, i) => {
 		return (
 			<div
@@ -52,16 +54,18 @@ const Item = ({ content, position, index }) => {
 	return (
 		<div>
 			<div className={css.pagging}>{dots}</div>
-			<span className={css.subheader}>
-				{getDistance(
-					position[1],
-					position[0],
-					content[index].lng,
-					content[index].lat
-				)}
-			</span>
-			<h2>{content[index].name}</h2>
-			<p>{content[index].vicinity}</p>
+			<div className={css.rank}>
+				<span className={css.subheader}>
+					{getDistance(
+						position[1],
+						position[0],
+						content[index].lng,
+						content[index].lat
+					)}
+				</span>
+				<h2>{content[index].name}</h2>
+				<p>{/*(content[index].vicinity*/}</p>
+			</div>
 		</div>
 	);
 };
