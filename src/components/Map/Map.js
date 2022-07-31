@@ -133,7 +133,7 @@ const Set = React.forwardRef((props, ref) => {
 			if (update) {
 				update({
 					target: "Results",
-					status: "Choose On Map",
+					status: "Located",
 					coords: normalizeCoords(map.getCenter(), "map"),
 					ranks: null,
 					index: 0

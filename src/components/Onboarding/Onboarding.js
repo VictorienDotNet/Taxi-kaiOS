@@ -34,7 +34,7 @@ export function Onboarding(props) {
 	}
 
 	const GoToMap = () => {
-		update({ target: "Map" });
+		update({ target: "Map", status: "Choose On Map" });
 	};
 
 	const GoToResults = () => {

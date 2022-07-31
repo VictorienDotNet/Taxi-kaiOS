@@ -43,6 +43,8 @@ export function Results({ data, update }) {
 
 	//Feetch Data if the coords change
 	useEffect(() => {
+		//Stop the update in case of wrong state
+		if (!coords) update({ target: "Onboarding", status: null });
 		if (ranks && ranks.length !== 0) return false;
 
 		fetch(
@@ -72,14 +74,14 @@ export function Results({ data, update }) {
 					fct: phone
 						? () => {
 								window.location = "tel:" + phone;
-								update({ status: "Call" });
+								update({ target: "Results", status: "Call" });
 						  }
 						: false
 				},
 				{
 					name: "Map",
 					fct: () => {
-						update({ status: "Map" });
+						update({ target: "Results", status: "Map" });
 					}
 				}
 			];
@@ -87,7 +89,11 @@ export function Results({ data, update }) {
 			return [
 				{
 					name: "Change Position",
-					fct: () => update({ target: "Onboarding", coords: null })
+					fct: () =>
+						update({
+							target: "Onboarding",
+							status: null
+						})
 				}
 			];
 		}
