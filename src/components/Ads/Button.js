@@ -17,7 +17,7 @@ export const AdsButton = () => {
 						// Ad is ready to be displayed
 						// calling 'display' will display the ad
 						ad.call("display");
-						setState("done");
+						setState(null);
 					}
 				});
 			} else {
@@ -29,9 +29,15 @@ export const AdsButton = () => {
 	useEffect(() => {
 		document.addEventListener("keydown", handleKeyDown);
 
+		setTimeout(() => {
+			setState(null);
+		}, 12000);
+
 		return () => document.removeEventListener("keydown", handleKeyDown);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	});
+	}, []);
+
+	if (!state) return false;
 
 	return (
 		<div className={css.button}>

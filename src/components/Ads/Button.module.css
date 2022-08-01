@@ -16,8 +16,8 @@
 	animation-name: appear;
 	animation-duration: 180ms;
 	animation-timing-function: ease-out;
-	animation-delay: 12s;
-	animation-fill-mode: backwards;
+	animation-delay: 4s;
+	animation-fill-mode: forwards;
 	opacity: 0;
 }
 
