@@ -166,3 +166,20 @@ const Set = React.forwardRef((props, ref) => {
 
 	return null;
 });
+
+/* USEFULL LINKS, DATA AND API */
+
+/**
+ * We could improve the first view of the map by zooming on the country of the users. To perform that without knowing his accurate location, we could use IP localisation API. We found three API for that:
+ 
+ 1. ipinfo.io
+ * https://ipinfo.io/blog/replacing-getcurrentposition
+
+ 2. country.is + country coords
+ * https://www.npmjs.com/package/react-ipgeolocation
+ * https://developers.google.com/public-data/docs/canonical/countries_csv
+ 
+ 3. Abstract API
+ * https://www.abstractapi.com/guides/how-to-use-ip-geolocation-in-react
+ 
+ */
