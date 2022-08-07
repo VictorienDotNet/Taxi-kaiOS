@@ -51,21 +51,34 @@ const Item = ({ content, position, index = 0 }) => {
 		);
 	});
 
-	return (
-		<div>
-			<div className={css.pagging}>{dots}</div>
-			<div className={css.rank}>
-				<span className={css.subheader}>
-					{getDistance(
-						position[1],
-						position[0],
-						content[index].lng,
-						content[index].lat
-					)}
-				</span>
-				<h2>{content[index].name}</h2>
-				<p>{/*(content[index].vicinity*/}</p>
+	if (content[index].type === "phone") {
+		return (
+			<div>
+				<div className={css.pagging}>{dots}</div>
+				<div className={css.service}>
+					<span className={css.subheader}>{content[index].vicinity}</span>
+					<h2>{content[index].name}</h2>
+					<p>{/*(content[index].vicinity*/}</p>
+				</div>
 			</div>
-		</div>
-	);
+		);
+	} else {
+		return (
+			<div>
+				<div className={css.pagging}>{dots}</div>
+				<div className={css.rank}>
+					<span className={css.subheader}>
+						{getDistance(
+							position[1],
+							position[0],
+							content[index].lng,
+							content[index].lat
+						)}
+					</span>
+					<h2>{content[index].name}</h2>
+					<p>{/*(content[index].vicinity*/}</p>
+				</div>
+			</div>
+		);
+	}
 };

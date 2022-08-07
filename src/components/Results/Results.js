@@ -105,7 +105,9 @@ export function Results({ data, update }) {
 			{status !== "Map" && <AdsButton />}
 			<Map center={coords} keyboard={status === "Map"}>
 				{coords && <MyPosition position={coords} />}
-				{ranks && <Rank position={[ranks[index].lat, ranks[index].lng]} />}
+				{ranks && ranks[index].type !== "phone" && (
+					<Rank position={[ranks[index].lat, ranks[index].lng]} />
+				)}
 			</Map>
 			<Card
 				position={coords}
