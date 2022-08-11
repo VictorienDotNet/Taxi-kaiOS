@@ -1,0 +1,31 @@
+{
+  "version": "1.1.0",
+  "name": "Taxis",
+  "description": "Find the closest taxi ranks. Get local taxi numbers.",
+  "type": "web",
+  "launch_path": "/index.html",
+  "icons": {
+    "56": "/icon/production/app@56w.png",
+    "112": "/icon/production/app@112w.png",
+    "128": "/icon/production/app@128w.png"
+  },
+  "developer": {
+    "name": "Taxis",
+    "url": "https://kaios.taxi"
+  },
+  "locales": {
+    "en-GB": {
+      "name": "Taxis",
+      "subtitle": "Find the closest taxi",
+      "description": "Find the closest taxi ranks. Get local taxi numbers."
+    }
+  },
+  "default_locale": "en-GB",
+  "permissions": {
+    "geolocation": {
+      "description": "Required to find taxi ranks from your location"
+    }
+  },
+  "fullscreen": "true",
+  "orientation": "portrait"
+}

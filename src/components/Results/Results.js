@@ -11,8 +11,8 @@ import {
 
 import { fetch } from "../../tools";
 
-export function Results({ data, update }) {
-	let { coords, status, ranks, index } = data;
+export function Results({ data, to }) {
+	let { coords, action, ranks, index } = data;
 
 	/* LISTENER FOR KEY EVENT */
 	useEffect(() => {
@@ -23,17 +23,17 @@ export function Results({ data, update }) {
 	}, [data]);
 
 	const onKeyDown = (evt) => {
-		if (evt.key === "ArrowLeft" && status !== "Map") {
+		if (evt.key === "ArrowLeft" && action !== "Display Map") {
 			let i = index - 1 < 0 ? 0 : index - 1;
-			update({ index: i });
-		} else if (evt.key === "ArrowRight" && status !== "Map") {
+			to(data.action, { index: i });
+		} else if (evt.key === "ArrowRight" && action !== "Display Map") {
 			let max = ranks.length - 1;
 			let i = index + 1 > max ? max : index + 1;
-			update({ index: i });
-		} else if (evt.key === "Backspace" && status === "Map") {
-			update({ status: "Success" });
-		} else if (evt.key === "Backspace" && status !== "Map") {
-			update({ target: "Onboarding", status: null });
+			to(data.action, { index: i });
+		} else if (evt.key === "Backspace" && action === "Display Map") {
+			to("View Results");
+		} else if (evt.key === "Backspace" && action !== "Display Map") {
+			to("Choose Location");
 		} else {
 			return;
 		}
@@ -43,80 +43,78 @@ export function Results({ data, update }) {
 
 	//Feetch Data if the coords change
 	useEffect(() => {
-		//Stop the update in case of wrong state
-		if (!coords) update({ target: "Onboarding", status: null });
-		if (ranks && ranks.length !== 0) return false;
+		//Stop the update in case that we have already offline datas.
 
-		fetch(
-			coords,
-			function (result) {
-				update({ ranks: result, status: result ? "Success" : "NoResult" });
-			},
-			function (error) {
-				update({ status: "Error" });
-			}
-		);
+		if (action === "Waiting Results") {
+			fetch(
+				coords,
+				function (result) {
+					to(null, { ranks: result });
+				},
+				function (error) {
+					//How to Handle error?
+				}
+			);
+		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [action]);
 
 	/* DEFINE SOFKEYS EVENT */
 	// We define actions depending on app stat
 	// !!To Improve: We use a switch, but so case are similar. Usinf IFs should be more efficent
 
 	const softactions = () => {
-		let phone = ranks && ranks[index].phone;
+		let phone = ranks && index && ranks[index].phone;
 
-		if (status === "Success" || status === "Call") {
+		if (action === "View Results" || action === "Call Taxi Service") {
 			return [
 				{
 					name: phone ? "Call" : "",
 					fct: phone
 						? () => {
 								window.location = "tel:" + phone;
-								update({ target: "Results", status: "Call" });
+								to("Call Taxi Service");
 						  }
 						: false
 				},
 				{
 					name: "Map",
 					fct: () => {
-						update({ target: "Results", status: "Map" });
+						to("Display Map");
 					}
 				}
 			];
-		} else if (status === "NoResult") {
+		} else if (action === "View Any Result") {
 			return [
 				{
 					name: "Change Position",
-					fct: () =>
-						update({
-							target: "Onboarding",
-							status: null
-						})
+					fct: () => to("Choose Location")
 				}
 			];
 		}
 	};
 	/**/
 
+	//Will desactivate ads and card when the map will show up
+	let isMap = action === "Display Map" ? true : false;
+	let isRanks = ranks && ranks.length > 0 ? true : false;
+
 	return (
 		<>
-			{status !== "Map" && <AdsButton />}
-			<Map center={coords} keyboard={status === "Map"}>
+			<Map center={coords} keyboard={isMap}>
 				{coords && <MyPosition position={coords} />}
-				{ranks && ranks[index].type !== "phone" && (
+				{isRanks && ranks[index].type !== "phone" && (
 					<Rank position={[ranks[index].lat, ranks[index].lng]} />
 				)}
 			</Map>
-			<Card
-				position={coords}
-				content={ranks || status || "Located"}
-				index={index}
-				visibility={status !== "Map"}
-			></Card>
-
-			{status !== "Map" && <Softkey>{softactions()}</Softkey>}
+			{!isMap && (
+				<>
+					<AdsButton />
+					<Card data={data}></Card>
+					<Softkey>{softactions()}</Softkey>
+				</>
+			)}
 		</>
 	);
 }

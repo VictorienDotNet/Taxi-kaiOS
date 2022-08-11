@@ -8,7 +8,7 @@ import "./Leaflet.1.7.1.css";
 
 //export function Map({ center, children, zoom }) {
 export const Map = React.forwardRef((props, ref) => {
-	const { center = [0, 0], children, update, keyboard = true } = props;
+	const { center = [0, 0], children, keyboard = true, to } = props;
 	/* SETUP REF */
 	// This ref is use to update map parameters */
 
@@ -67,9 +67,9 @@ export const Map = React.forwardRef((props, ref) => {
 		<div
 			className={css.Container}
 			data-fullscreen={keyboard}
-			data-update={update ? true : false}
+			data-update={to ? true : false}
 		>
-			{update && (
+			{to && (
 				<div className={css.Target}>
 					<Target />
 				</div>
@@ -78,7 +78,7 @@ export const Map = React.forwardRef((props, ref) => {
 				<MapContainer className={css.Map} keyboardPanDelta={0}>
 					<TileLayer url={classicTiles} />
 					{children}
-					<Set bounds={bounds} ref={ref} update={update} keyboard={keyboard} />
+					<Set bounds={bounds} ref={ref} to={to} keyboard={keyboard} />
 				</MapContainer>
 			)}
 			<div className={css.Softkeys}>
@@ -92,10 +92,10 @@ export const Map = React.forwardRef((props, ref) => {
 
 /* TRIGGER MAP UPDATE */
 
-/* MapContainer props are immutable: changing them after they have been set a first time will have no effect on the Map instance or its container. The Leaflet Map instance created by the MapContainer element can be accessed by child components using one of the provided hooks or the MapConsumer component. The component is use to triger update on the map */
+/* MapContainer props are immutable: changing them after they have been set a first time will have no effect on the Map instance or its container. The Leaflet Map instance created by the MapContainer element can be accessed by child components using one of the provided hooks or the MapConsumer component. The component is use to triger re-render on the map */
 
 const Set = React.forwardRef((props, ref) => {
-	const { bounds, update, keyboard } = props;
+	const { bounds, to, keyboard } = props;
 	const map = useMap();
 
 	if (ref) {
@@ -129,14 +129,10 @@ const Set = React.forwardRef((props, ref) => {
 			map.panBy([i, 0], { animate: true });
 			//This last entry, trigger the onSubmit function and sent back the center of the map to the parent
 		} else if (evt.key === "Enter") {
-			//update
-			if (update) {
-				update({
-					target: "Results",
-					status: "Located",
-					coords: normalizeCoords(map.getCenter(), "map"),
-					ranks: null,
-					index: 0
+			//Go to display the results according to the coords
+			if (to) {
+				to(null, {
+					coords: normalizeCoords(map.getCenter(), "map")
 				});
 			}
 		} else {
@@ -155,7 +151,7 @@ const Set = React.forwardRef((props, ref) => {
 	useEffect(() => {
 		map.fitBounds(bounds, {
 			// I don't undertsand anything about the value of the padding.
-			padding: [16, 16]
+			padding: [24, 48]
 		});
 	}, [bounds, map]);
 

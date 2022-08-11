@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import css from "./Onboarding.module.scss";
 import { getCurrentPosition, normalizeCoords, openSettings } from "../../tools";
 import { useNavigation } from "../../hooks";
 import { Earth } from "./Earth";
+import { ReactComponent as Sign } from "./sign.svg";
 
 export function Onboarding(props) {
-	const [current, next] = useState("Choose Location");
-	const { update } = props;
+	const { data, to } = props;
 
 	/* ARROW NAVIGATION */
 	// Will be used to store the index of the selected result
@@ -17,47 +17,34 @@ export function Onboarding(props) {
 	 * We have four states : Initial, Loading, Denied and Error
 	 */
 
-	if (current === "Waiting Location") {
-		getCurrentPosition(
-			(position) => {
-				update({
-					coords: normalizeCoords(position.coords, "GPS"),
-					status: "Located",
-					ranks: null,
-					index: 0
-				});
-				next("Got Location");
-			},
-			() => next("Handle Denied Location"),
-			() => next("Handle Location Error")
-		);
-	}
-
-	const GoToMap = () => {
-		update({ target: "Map", status: "Choose On Map" });
-	};
-
-	const GoToResults = () => {
-		update({ target: "Results" });
-	};
-
-	switch (current) {
-		case "Learn Basic":
+	switch (data.action) {
+		case "Learn Basics":
 			return (
-				<Wrapper>
+				<div className={css.onboarding}>
+					<div className={css.SolarSystem}>
+						<Sign />
+					</div>
 					<p>Find easily taxi stand around.</p>
-					<button onClick={() => next("Choose Location")}>Continue</button>
-				</Wrapper>
+					<button onClick={() => to("Choose Location")}>Continue</button>
+				</div>
 			);
 		case "Choose Location":
 			return (
 				<Wrapper>
 					<p>Where do you want to find taxis?</p>
-					<button onClick={() => next("Waiting Location")}>Near Me</button>
-					<button onClick={GoToMap}>Choose On Map</button>
+					<button onClick={() => to("Waiting Location")}>Near Me</button>
+					<button onClick={() => to("Choose On Map")}>Choose On Map</button>
 				</Wrapper>
 			);
 		case "Waiting Location":
+			getCurrentPosition(
+				(res) => {
+					to("Got Location", { coords: normalizeCoords(res.coords, "GPS") });
+				},
+				() => to("Handle Denied Location"),
+				() => to("Handle Location Error")
+			);
+
 			return (
 				<Wrapper>
 					<p>Searching the stars for your location…</p>
@@ -67,7 +54,7 @@ export function Onboarding(props) {
 			);
 		case "Got Location":
 			setTimeout(() => {
-				GoToResults();
+				to("Waiting Results");
 			}, 1000);
 			return (
 				<Wrapper>
@@ -84,16 +71,18 @@ export function Onboarding(props) {
 						location, grant access through the settings.
 					</p>
 					<button onClick={openSettings}>Settings</button>
-					<button onClick={GoToMap}>Choose On Map</button>
+					<button onClick={() => to("Choose On Map")}>Choose On Map</button>
 				</Wrapper>
 			);
-		default:
+		case "Handle Location Error":
 			return (
 				<Wrapper>
 					<p>We didn't success to retrieve your location.</p>
-					<button onClick={GoToMap}>Choose On Map</button>
+					<button onClick={() => to("Choose On Map")}>Choose On Map</button>
 				</Wrapper>
 			);
+		default:
+			break;
 	}
 }
 

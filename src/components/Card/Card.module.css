@@ -31,33 +31,8 @@
 	vertical-align: middle;
 	color: rgba(0, 0, 0, 0.6);
 }
-.rank {
-	position: relative;
-	/*I didn't success to align the subheader. I adujusted the padding optically to make vertical aligned*/
-	padding: 10px 16px 12px 44px;
-	line-height: 1em;
 
-	border-radius: 4px;
-	background-color: rgba(255, 191, 0, 0.16);
-}
-
-.rank:before {
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	left: 12px;
-
-	width: 24px;
-	height: 24px;
-
-	content: "";
-	border-radius: 4px;
-	background-color: rgb(255, 191, 0);
-	background-image: url(./assets/T.svg);
-	background-position: center;
-	background-repeat: no-repeat;
-}
-
+.rank,
 .service {
 	position: relative;
 	/*I didn't success to align the subheader. I adujusted the padding optically to make vertical aligned*/
@@ -65,9 +40,9 @@
 	line-height: 1em;
 
 	border-radius: 4px;
-	background-color: rgba(0, 194, 74, 0.1);
 }
 
+.rank:before,
 .service:before {
 	position: absolute;
 	top: 50%;
@@ -79,10 +54,26 @@
 
 	content: "";
 	border-radius: 4px;
-	background-color: rgb(0, 194, 74);
-	background-image: url(./assets/phone.svg);
 	background-position: center;
 	background-repeat: no-repeat;
+}
+
+.rank {
+	background-color: rgba(255, 191, 0, 0.16);
+}
+
+.service {
+	background-color: rgba(0, 194, 74, 0.1);
+}
+
+.rank:before {
+	background-color: rgb(255, 191, 0);
+	background-image: url(./assets/T.svg);
+}
+
+.service:before {
+	background-color: rgb(0, 194, 74);
+	background-image: url(./assets/phone.svg);
 }
 
 /* Pagging Systemes */

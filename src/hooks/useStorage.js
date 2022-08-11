@@ -18,6 +18,13 @@ export const useStorage = () => {
 				} else if (!data.version) {
 					//if we don't have a version number, it's an installation
 					install();
+				} else if (
+					(data.version && data.version === "1.0.3") ||
+					data.datasets.target ||
+					data.datasets.status
+				) {
+					//if the users had the version 1.0.3, he had the previous datasets scheme. From this version, we removed target and status property. That's why ee need to migrate the dataset.
+					migrating(data);
 				} else if (compare(data.version, version, "<")) {
 					//if we have a lower version number, it's an update
 					update(data);
@@ -39,10 +46,8 @@ export const useStorage = () => {
 			version: version,
 			createdAt: Date.now(),
 			datasets: {
-				//Which view to target
-				target: "Onboarding",
 				//Global resume of the situation
-				status: null,
+				action: "Choose Location",
 				//Store User's position
 				coords: null,
 				//Store data from Taxi API
@@ -91,10 +96,8 @@ export const useStorage = () => {
 			createdAt: data.created,
 			version: version,
 			datasets: {
-				//Which view to target
-				target: "Onboarding",
 				//Global resume of the situation
-				status: null,
+				action: "Choose Location",
 				//Store User's position
 				coords: null,
 				//Store data from Taxi API

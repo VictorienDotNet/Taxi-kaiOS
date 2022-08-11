@@ -8,29 +8,9 @@ import { GetPositionButton } from "./GetPositionButton";
 
 // MyPosition: Display a blue dot on the user's position.
 export function Earth(props) {
-	let [x, setX] = useState(0);
-
-	/*
-	useEffect(() => {
-		setInterval(() => {
-			setX((prev) => {
-				return prev - 1;
-			});
-		}, 40);
-	}, []);
-	
-
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			setX(x - 1);
-		}, 40);
-		return () => clearTimeout(timer);
-	}, [x]);
-	*/
-
 	return (
 		<div className={css.SolarSystem}>
-			<div data-flag="flag" style={{ backgroundPositionX: x }}></div>
+			<div data-flag="flag"></div>
 			<GetPositionButton />
 		</div>
 	);
