@@ -65,7 +65,7 @@ export function Results({ data, to }) {
 	// !!To Improve: We use a switch, but so case are similar. Usinf IFs should be more efficent
 
 	const softactions = () => {
-		let phone = ranks && index && ranks[index].phone;
+		let phone = ranks && (index || index === 0) && ranks[index].phone;
 
 		if (action === "View Results" || action === "Call Taxi Service") {
 			return [
