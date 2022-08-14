@@ -14,7 +14,7 @@ export default function App() {
 	//All analytics is trigger from here except for openning, installation and update which is trigger in the useStorage hook.
 	//We look into the previous state of data to not track twice an event and avoid back navigation tracking
 	useEffect(() => {
-		let { action, ranks, index, coords, id } = data;
+		let { action, ranks, index, coords } = data;
 		let a = action;
 		let b = previousData && previousData.action;
 		let properties = {};
@@ -41,7 +41,7 @@ export default function App() {
 		//!\\ Need to manage new event name
 		//!\\ Need to verify property event
 
-		hit(a, properties, id);
+		hit(a, properties);
 	}, [data, previousData]);
 
 	/*** State Manager ***/
@@ -84,6 +84,15 @@ export default function App() {
 
 	/*** Render ***/
 	//What view to render is written in the offline datasets as target. We apply strickly the rules here
+
+	//A path to display Results when we have "Call Taxi Service" stored as action
+	if (data.action === "Call Taxi Service") {
+		data.action = data.ranks.length === 0 ? "View Any Result" : "View Results";
+		hit("Call Taxi Service", {
+			phone: data.ranks[data.index].phone,
+			name: data.ranks[data.index].name
+		});
+	}
 
 	if (!data) {
 		return <div></div>;

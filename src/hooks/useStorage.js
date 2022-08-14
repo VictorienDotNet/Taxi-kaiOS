@@ -70,8 +70,8 @@ export const useStorage = () => {
 		//The Datasets that we will store
 		const newDatasets = {
 			version: version,
-			createdAt: data.createdAt,
-			id: data.id,
+			createdAt: data.createdAt ? data.createdAt : Date.now(),
+			id: data.id ? data.id : uuidv4(),
 			datasets: {
 				//Global resume of the situation
 				action: data.datasets.action ? data.datasets.action : "Choose Location",
