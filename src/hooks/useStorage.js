@@ -6,32 +6,21 @@ import { v4 as uuidv4 } from "uuid";
 const version = process.env.REACT_APP_V;
 //import useAnalytics from "./useAnalytics";
 
-const DataModel = {};
-
 export const useStorage = () => {
 	let [datasets, setDatasets] = useState(false);
 
 	useEffect(() => {
 		get("taxi")
 			.then((data) => {
-				//Depending on the browser, a successfull request could be an empty object {}. To be sure that's the first openning of the app. We will need to check if the object contain any data. We use the app version to make the difference between an opening, an update or an installation
-				if (!data.version && data.created) {
-					//if we don't have a version number, but a created date, it's a historical database from version 1.0.2 and 1.0.3. It's an special update
-					migrating(data);
-				} else if (!data.version) {
-					//if we don't have a version number, it's an installation
+				//Depending on the browser, a successfull request could be an empty object {}. To be sure that's the first openning of the app. We will need to check if the object contain any data. We use the creation date and the version to make the difference between an opening, an update or an installation
+				if (!data.created) {
+					//if we don't have a creation date, it's an installation
 					install();
-				} else if (
-					(data.version && data.version === "1.0.3") ||
-					data.datasets.target ||
-					data.datasets.status ||
-					!data.datasets.id
-				) {
-					//if the users had the version 1.0.3, he had the previous datasets scheme. From this version, we removed target and status property. That's why we need to migrate the dataset.
-					//If he don't have a ID, we add one by migrating the data
-					migrating(data);
-				} else if (compare(data.version, version, "<")) {
-					//if we have a lower version number, it's an update
+				} else if (compare(data.version, version, "<") || !data.version) {
+					//if we have a lower version number or no version number, it's an update
+					update(data);
+				} else if (process.env.NODE_ENV !== "production") {
+					//During the developement, we always update the datasets to be sure we always follow the latest Data Model. That's simplify our developer life and void bug.
 					update(data);
 				} else {
 					//Otherwie, it's a simple opening. We sent back the datasets
@@ -44,15 +33,14 @@ export const useStorage = () => {
 			});
 	}, []);
 
-	//During an installation, we creating the object from craft. The object will be the template of the datas stored offline
+	//During an installation, we create the object from craft.
 	const install = () => {
 		//The Datasets that we will store
 		const newDatasets = {
 			version: version,
 			createdAt: Date.now(),
+			id: uuidv4(),
 			datasets: {
-				//User ID
-				id: uuidv4(),
 				//Global resume of the situation
 				action: "Choose Location",
 				//Store User's position
@@ -63,68 +51,54 @@ export const useStorage = () => {
 				index: 0
 			}
 		};
-		//We are storing offline the Datasets through the set function
+		//We store offline the Datasets through the set function
 		set("taxi", newDatasets)
 			.then(() => {
 				//Successfull installation
 				//We sent back the datasets to the app
 				setDatasets(newDatasets.datasets);
-				hit("Install App", null, newDatasets.datasets.id);
+				//We push an event for analytics
+				hit("Install App", null, newDatasets.id);
 			})
 			.catch((err) => {
 				//Unsuccessfull installation
 			});
 	};
 
-	//During an update, we taking the exact datas, but we update the app version number in the object
+	//During an update, we push the previous data in the template except for the app version. This way, we have a new version number. Moreover, we clean the datasets: we remove unecessary data and update to the new data model.
 	const update = (data) => {
 		//The Datasets that we will store
-		const updatedDatasets = {
-			...data,
-			version: version
-		};
-
-		set("taxi", updatedDatasets)
-			.then(() => {
-				//Successfull installation
-				setDatasets(updatedDatasets.datasets);
-				hit("Open App", { type: "update" }, updatedDatasets.datasets.id);
-			})
-			.catch((err) => {
-				//Unsuccessfull installation
-			});
-	};
-
-	//During an migrating, we update the whole database and reformate according to the new scheme
-	// In the specific case of v1.0.2 and v1.0.3, the previous database had only the value "created" which store the date of the databse creation
-	const migrating = (data) => {
-		//The Datasets that we will store
-		const updatedDatasets = {
-			createdAt: data.created,
+		const newDatasets = {
 			version: version,
+			createdAt: data.createdAt,
+			id: data.id,
 			datasets: {
-				//User ID
-				id: uuidv4(),
 				//Global resume of the situation
-				action: "Choose Location",
+				action: data.datasets.action ? data.datasets.action : "Choose Location",
 				//Store User's position
-				coords: null,
+				coords: data.datasets.coords ? data.datasets.coords : null,
 				//Store data from Taxi API
-				ranks: null,
+				ranks: data.datasets.ranks ? data.datasets.ranks : null,
 				//Store the index of ranks
-				index: 0
+				index: data.datasets.index ? data.datasets.index : 0
 			}
 		};
 
-		set("taxi", updatedDatasets)
+		set("taxi", newDatasets)
 			.then(() => {
 				//Successfull installation
-				setDatasets(updatedDatasets.datasets);
-				hit("Open App", { type: "migrating" }, updatedDatasets.datasets.id);
+				setDatasets(newDatasets.datasets);
+				hit("Open App", { type: "update" }, newDatasets.id);
 			})
 			.catch((err) => {
 				//Unsuccessfull installation
 			});
+	};
+
+	// We open the app without performing any change on the offline data. Moreover, we push an event for the records.
+	const open = (data) => {
+		hit("Open App", {}, data.id);
+		setDatasets(data.datasets);
 	};
 
 	//The App have access only to the data and not the metadata (version and the creation date). We use the updateDatasets to update the data outside of the hooks
@@ -144,19 +118,6 @@ export const useStorage = () => {
 			//We sent back the datasets
 			setDatasets(newData.datasets);
 		});
-	};
-
-	// We open the app without performing any change on the offline data. However, in the special case that the user will not complete the onboarding, we reset the "target" on Onboarding.
-	const open = (data) => {
-		//Previously, we was updating the datasets while openning. We was setting up the target as Onboarding or Results depending on the availibility of the coords. We don't wanted to bring back people on Choose On Map if they didn't finish the Onboarding. We remove that because of an expected behaviour.
-		/*let d = {
-			...data.datasets,
-			target: data.datasets.coords ? "Results" : "Onboarding"
-		};/**/
-		let d = data.datasets;
-
-		hit("Open App", {}, d.id);
-		setDatasets(d);
 	};
 
 	return [datasets, updateDatasets];

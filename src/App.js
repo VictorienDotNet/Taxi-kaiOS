@@ -5,12 +5,12 @@ import { useStorage, usePrevious } from "./hooks";
 import { hit } from "./tools";
 
 export default function App() {
-	/* Use Storage is an offline database */
+	/*** Use Storage is an offline database ***/
 	// Once we trigger it, the function will fecth the data available on the device. During the process, the function will figure out if it's an app openning, an update or installation
 	let [data, update] = useStorage();
 	let previousData = usePrevious(data);
 
-	/* Analytics */
+	/*** Analytics ***/
 	//All analytics is trigger from here except for openning, installation and update which is trigger in the useStorage hook.
 	//We look into the previous state of data to not track twice an event and avoid back navigation tracking
 	useEffect(() => {
@@ -44,7 +44,7 @@ export default function App() {
 		hit(a, properties, id);
 	}, [data, previousData]);
 
-	/* State Manager */
+	/*** State Manager ***/
 	// The "to" function handle the states management. Triggered by the compomeents, "to" apply the correct data (e.g. : reseting coords) and redirect to the corresponding view according to the action.
 
 	const to = (input) => {
@@ -82,7 +82,7 @@ export default function App() {
 		update({ ...data, ...output });
 	};
 
-	/* Render */
+	/*** Render ***/
 	//What view to render is written in the offline datasets as target. We apply strickly the rules here
 
 	if (!data) {
