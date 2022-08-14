@@ -39,7 +39,10 @@ export function Onboarding(props) {
 		case "Waiting Location":
 			getCurrentPosition(
 				(res) => {
-					to("Got Location", { coords: normalizeCoords(res.coords, "GPS") });
+					to({
+						action: "Got Location",
+						coords: normalizeCoords(res.coords, "GPS")
+					});
 				},
 				() => to("Handle Denied Location"),
 				() => to("Handle Location Error")

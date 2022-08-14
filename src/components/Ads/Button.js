@@ -29,11 +29,14 @@ export const AdsButton = () => {
 	useEffect(() => {
 		document.addEventListener("keydown", handleKeyDown);
 
-		setTimeout(() => {
+		let timeout = setTimeout(() => {
 			setState(null);
 		}, 12000);
 
-		return () => document.removeEventListener("keydown", handleKeyDown);
+		return () => {
+			document.removeEventListener("keydown", handleKeyDown);
+			clearTimeout(timeout);
+		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

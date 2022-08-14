@@ -25,11 +25,11 @@ export function Results({ data, to }) {
 	const onKeyDown = (evt) => {
 		if (evt.key === "ArrowLeft" && action !== "Display Map") {
 			let i = index - 1 < 0 ? 0 : index - 1;
-			to(data.action, { index: i });
+			to({ index: i });
 		} else if (evt.key === "ArrowRight" && action !== "Display Map") {
 			let max = ranks.length - 1;
 			let i = index + 1 > max ? max : index + 1;
-			to(data.action, { index: i });
+			to({ index: i });
 		} else if (evt.key === "Backspace" && action === "Display Map") {
 			to("View Results");
 		} else if (evt.key === "Backspace" && action !== "Display Map") {
@@ -49,7 +49,7 @@ export function Results({ data, to }) {
 			fetch(
 				coords,
 				function (result) {
-					to(null, { ranks: result });
+					to({ ranks: result });
 				},
 				function (error) {
 					//How to Handle error?
@@ -65,9 +65,8 @@ export function Results({ data, to }) {
 	// !!To Improve: We use a switch, but so case are similar. Usinf IFs should be more efficent
 
 	const softactions = () => {
-		let phone = ranks && (index || index === 0) && ranks[index].phone;
-
 		if (action === "View Results" || action === "Call Taxi Service") {
+			let phone = ranks && (index || index === 0) && ranks[index].phone;
 			return [
 				{
 					name: phone ? "Call" : "",

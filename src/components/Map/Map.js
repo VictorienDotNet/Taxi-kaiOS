@@ -131,7 +131,7 @@ const Set = React.forwardRef((props, ref) => {
 		} else if (evt.key === "Enter") {
 			//Go to display the results according to the coords
 			if (to) {
-				to(null, {
+				to({
 					coords: normalizeCoords(map.getCenter(), "map")
 				});
 			}

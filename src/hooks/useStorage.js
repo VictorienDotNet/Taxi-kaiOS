@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { set, get } from "idb-keyval";
 import { compare } from "compare-versions";
 import { hit } from "../tools";
+import { v4 as uuidv4 } from "uuid";
 const version = process.env.REACT_APP_V;
 //import useAnalytics from "./useAnalytics";
+
+const DataModel = {};
 
 export const useStorage = () => {
 	let [datasets, setDatasets] = useState(false);
@@ -21,9 +24,11 @@ export const useStorage = () => {
 				} else if (
 					(data.version && data.version === "1.0.3") ||
 					data.datasets.target ||
-					data.datasets.status
+					data.datasets.status ||
+					!data.datasets.id
 				) {
-					//if the users had the version 1.0.3, he had the previous datasets scheme. From this version, we removed target and status property. That's why ee need to migrate the dataset.
+					//if the users had the version 1.0.3, he had the previous datasets scheme. From this version, we removed target and status property. That's why we need to migrate the dataset.
+					//If he don't have a ID, we add one by migrating the data
 					migrating(data);
 				} else if (compare(data.version, version, "<")) {
 					//if we have a lower version number, it's an update
@@ -46,6 +51,8 @@ export const useStorage = () => {
 			version: version,
 			createdAt: Date.now(),
 			datasets: {
+				//User ID
+				id: uuidv4(),
 				//Global resume of the situation
 				action: "Choose Location",
 				//Store User's position
@@ -62,7 +69,7 @@ export const useStorage = () => {
 				//Successfull installation
 				//We sent back the datasets to the app
 				setDatasets(newDatasets.datasets);
-				hit("Install App");
+				hit("Install App", null, newDatasets.datasets.id);
 			})
 			.catch((err) => {
 				//Unsuccessfull installation
@@ -81,7 +88,7 @@ export const useStorage = () => {
 			.then(() => {
 				//Successfull installation
 				setDatasets(updatedDatasets.datasets);
-				hit("Open App", { type: "update" });
+				hit("Open App", { type: "update" }, updatedDatasets.datasets.id);
 			})
 			.catch((err) => {
 				//Unsuccessfull installation
@@ -96,12 +103,16 @@ export const useStorage = () => {
 			createdAt: data.created,
 			version: version,
 			datasets: {
+				//User ID
+				id: uuidv4(),
 				//Global resume of the situation
 				action: "Choose Location",
 				//Store User's position
 				coords: null,
 				//Store data from Taxi API
-				ranks: null
+				ranks: null,
+				//Store the index of ranks
+				index: 0
 			}
 		};
 
@@ -109,7 +120,7 @@ export const useStorage = () => {
 			.then(() => {
 				//Successfull installation
 				setDatasets(updatedDatasets.datasets);
-				hit("Open App", { type: "migrating" });
+				hit("Open App", { type: "migrating" }, updatedDatasets.datasets.id);
 			})
 			.catch((err) => {
 				//Unsuccessfull installation
@@ -144,7 +155,7 @@ export const useStorage = () => {
 		};/**/
 		let d = data.datasets;
 
-		hit("Open App");
+		hit("Open App", {}, d.id);
 		setDatasets(d);
 	};
 
@@ -158,31 +169,6 @@ window.dev = {
 	//Clear the database to perform a installation
 	clear: () => {
 		set("taxi", {});
-		document.location.reload();
-	},
-	//Simulate a migration of Data
-	migrate: () => {
-		set("taxi", { created: 1659000039771 });
-		document.location.reload();
-	},
-	//Simulate a update of Data
-	update: () => {
-		set("taxi", {
-			version: "1.0.2",
-			createdAt: Date.now(),
-			datasets: {
-				//Which view to target
-				target: "Onboarding",
-				//Global resume of the situation
-				status: null,
-				//Store User's position
-				coords: null,
-				//Store data from Taxi API
-				ranks: null,
-				//Store the index of ranks
-				index: 0
-			}
-		});
 		document.location.reload();
 	},
 	get: () => {

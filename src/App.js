@@ -14,7 +14,7 @@ export default function App() {
 	//All analytics is trigger from here except for openning, installation and update which is trigger in the useStorage hook.
 	//We look into the previous state of data to not track twice an event and avoid back navigation tracking
 	useEffect(() => {
-		let { action, ranks, index, coords } = data;
+		let { action, ranks, index, coords, id } = data;
 		let a = action;
 		let b = previousData && previousData.action;
 		let properties = {};
@@ -41,73 +41,45 @@ export default function App() {
 		//!\\ Need to manage new event name
 		//!\\ Need to verify property event
 
-		hit(a, properties);
+		hit(a, properties, id);
 	}, [data, previousData]);
 
 	/* State Manager */
 	// The "to" function handle the states management. Triggered by the compomeents, "to" apply the correct data (e.g. : reseting coords) and redirect to the corresponding view according to the action.
 
-	const to = (action, props) => {
-		if (props && !action) {
-			if (props.coords) {
-				update({
-					action: "Waiting Results",
-					coords: props.coords,
-					ranks: null,
-					index: 0
-				});
-				return false;
-			} else if (props.ranks) {
-				update({
-					action: props.ranks.length === 0 ? "View Any Result" : "View Results",
-					ranks: props.ranks,
-					index: 0
-				});
-				return false;
+	const to = (input) => {
+		let output;
+		let { coords, ranks, action } = input;
+
+		//Most of the time, the input it's just a string with the state where to go. However, sometime we receive an object to push into the datatsets
+		if (typeof input === "string") {
+			//We have only a string, it's an action (state)
+			output = { action: input };
+		} else {
+			//It's object, we push the input into the datasets. However, somes rules apply to avoid bugs and crashs.
+
+			//If we reset the coord or the ranks. We reset the index too. Otherwise, it could target a childrien which doesn't exist.
+			if (ranks || coords) {
+				input.index = 0;
+				//If we have only coords, we reset the ranks which was associated to the previous coords.
+				input.ranks = ranks ? ranks : null;
 			}
+
+			//If we don't have "action", we guess it according to the input
+			if (!action && coords) {
+				//New coords, we need to wait for the results again.
+				input.action = "Waiting Results";
+			} else if (!action && ranks) {
+				//New results, we need to display it
+				input.action = ranks.length === 0 ? "View Any Result" : "View Results";
+			}
+
+			//Once we applied the rules, the ouput is ready.
+			output = input;
 		}
 
-		switch (action) {
-			case "Choose Location":
-				update({ action: "Choose Location" });
-
-				break;
-			case "Waiting Location":
-				update({ action: "Waiting Location" });
-
-				break;
-			case "Got Location":
-				update({ action: "Got Location", ...props });
-
-				break;
-			case "Handle Denied Location":
-				update({ action: "Handle Denied Location" });
-
-				break;
-			case "Handle Location Error":
-				update({ action: "Handle Location Error" });
-				break;
-			case "Choose On Map":
-				update({ action: "Choose On Map" });
-				break;
-			case "Waiting Results":
-				update({
-					action: "Waiting Results",
-					...props
-				});
-				break;
-			case "View Results":
-				update({ action: "View Results", ...props });
-				break;
-			case "View Any Results":
-				update({ action: "View Any Result" });
-				break;
-			case "Display Map":
-				update({ action: "Display Map" });
-				break;
-			default:
-				break;
-		}
+		//We update the datasets
+		update({ ...data, ...output });
 	};
 
 	/* Render */
