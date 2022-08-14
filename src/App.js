@@ -102,7 +102,8 @@ export default function App() {
 		data.action === "Waiting Results" ||
 		data.action === "View Results" ||
 		data.action === "View Any Result" ||
-		data.action === "Display Map"
+		data.action === "Display Map" ||
+		data.action === "Call Taxi Service"
 	) {
 		return <Results data={data} to={to} />;
 	} else {

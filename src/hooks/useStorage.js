@@ -13,7 +13,7 @@ export const useStorage = () => {
 		get("taxi")
 			.then((data) => {
 				//Depending on the browser, a successfull request could be an empty object {}. To be sure that's the first openning of the app. We will need to check if the object contain any data. We use the creation date and the version to make the difference between an opening, an update or an installation
-				if (!data.created) {
+				if (!data.createdAt) {
 					//if we don't have a creation date, it's an installation
 					install();
 				} else if (compare(data.version, version, "<") || !data.version) {
