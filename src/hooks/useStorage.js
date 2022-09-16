@@ -6,11 +6,14 @@ import { v4 as uuidv4 } from "uuid";
 const version = process.env.REACT_APP_V;
 //import useAnalytics from "./useAnalytics";
 
+const name = "taxi.kaios." + process.env.NODE_ENV;
+
 export const useStorage = () => {
 	let [datasets, setDatasets] = useState(false);
 
 	useEffect(() => {
-		get("taxi")
+		console.log(name);
+		get(name)
 			.then((data) => {
 				//Depending on the browser, a successfull request could be an empty object {}. To be sure that's the first openning of the app. We will need to check if the object contain any data. We use the creation date and the version to make the difference between an opening, an update or an installation
 				if (!data.createdAt) {
@@ -52,7 +55,7 @@ export const useStorage = () => {
 			}
 		};
 		//We store offline the Datasets through the set function
-		set("taxi", newDatasets)
+		set(name, newDatasets)
 			.then(() => {
 				//Successfull installation
 				//We sent back the datasets to the app
@@ -84,7 +87,7 @@ export const useStorage = () => {
 			}
 		};
 
-		set("taxi", newDatasets)
+		set(name, newDatasets)
 			.then(() => {
 				//Successfull installation
 				setDatasets(newDatasets.datasets);
@@ -103,7 +106,7 @@ export const useStorage = () => {
 
 	//The App have access only to the data and not the metadata (version and the creation date). We use the updateDatasets to update the data outside of the hooks
 	const updateDatasets = (datasets) => {
-		get("taxi").then((metadata) => {
+		get(name).then((metadata) => {
 			const newData = {
 				...metadata,
 				datasets: {
@@ -114,7 +117,7 @@ export const useStorage = () => {
 				}
 			};
 			//We updating the database
-			set("taxi", newData);
+			set(name, newData);
 			//We sent back the datasets
 			setDatasets(newData.datasets);
 		});
@@ -129,11 +132,11 @@ export const useStorage = () => {
 window.dev = {
 	//Clear the database to perform a installation
 	clear: () => {
-		set("taxi", {});
+		set(name, {});
 		document.location.reload();
 	},
 	get: () => {
-		get("taxi").then((data) => {
+		get(name).then((data) => {
 			console.log(data);
 		});
 	}
