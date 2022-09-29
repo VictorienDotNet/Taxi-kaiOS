@@ -6,10 +6,16 @@ import { v4 as uuidv4 } from "uuid";
 const version = process.env.REACT_APP_V;
 //import useAnalytics from "./useAnalytics";
 
-const name = "taxi.kaios." + process.env.NODE_ENV;
+let name = "taxi.kaios." + process.env.NODE_ENV;
 
 export const useStorage = () => {
 	let [datasets, setDatasets] = useState(false);
+
+	//Patch until we develop a database migration.
+	//We we will need to develop a fonction to migrate the database name from "taxi" to "taxi.kaios.production"
+	if (process.env.NODE_ENV === "production") {
+		name = "taxi";
+	}
 
 	useEffect(() => {
 		console.log(name);
