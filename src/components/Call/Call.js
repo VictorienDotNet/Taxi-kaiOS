@@ -49,11 +49,11 @@ export function Call(props) {
 			//Display Call Prompt
 			setTimeout(() => {
 				window.location = "tel:" + phone;
-			}, 1300);
+			}, 500);
 			//Go to the Feedback Prompt
 			setTimeout(() => {
 				to("Review Taxi Service");
-			}, 1500);
+			}, 1650);
 			return (
 				<div className={css.main}>
 					<div>
