@@ -5,3 +5,5 @@ export * from "./Ads/Button";
 export * from "./Card/Card";
 export * from "./Onboarding/Onboarding";
 export * from "./Results/Results";
+export * from "./Call/Call";
+export * from "./Button/Button";

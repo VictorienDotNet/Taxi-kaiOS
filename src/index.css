@@ -29,6 +29,10 @@ i {
 	font-style: italic;
 }
 
+b {
+	font-weight: bold;
+}
+
 /** 
 * DESKTOP SUPPORT
 * The app will be hosted online;

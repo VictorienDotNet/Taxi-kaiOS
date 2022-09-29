@@ -72,7 +72,6 @@ export function Results({ data, to }) {
 					name: phone ? "Call" : "",
 					fct: phone
 						? () => {
-								window.location = "tel:" + phone;
 								to("Call Taxi Service");
 						  }
 						: false

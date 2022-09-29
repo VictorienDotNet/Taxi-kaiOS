@@ -1,5 +1,5 @@
 import React from "react";
-import { Onboarding, Map, Results } from "./components";
+import { Onboarding, Map, Results, Call } from "./components";
 import { useEffect } from "react";
 import { useStorage, usePrevious } from "./hooks";
 import { hit } from "./tools";
@@ -20,7 +20,16 @@ export default function App() {
 		let properties = {};
 
 		//avoid double event and back navigation tracking
-		if (a === b || (b === "Display Map" && a === "View Results")) return false;
+		if (a === b) return false;
+		if (a === "View Results") {
+			if (
+				b === "Display Map" ||
+				b === "Review Taxi Service" ||
+				b === "Satisfy With Taxi Service" ||
+				b === "Unsatisfy With Taxi Service"
+			)
+				return false;
+		}
 
 		//configure properties based on the event
 		if (a === "Call Taxi Service")
@@ -35,11 +44,6 @@ export default function App() {
 				latitude: coords.lat,
 				longitude: coords.lng
 			};
-
-		//We remove block usell event to avoid to many hits
-
-		//!\\ Need to manage new event name
-		//!\\ Need to verify property event
 
 		hit(a, properties);
 	}, [data, previousData]);
@@ -86,13 +90,14 @@ export default function App() {
 	//What view to render is written in the offline datasets as target. We apply strickly the rules here
 
 	//A path to display Results when we have "Call Taxi Service" stored as action
+	/*
 	if (data.action === "Call Taxi Service") {
 		data.action = data.ranks.length === 0 ? "View Any Result" : "View Results";
 		hit("Call Taxi Service", {
 			phone: data.ranks[data.index].phone,
 			name: data.ranks[data.index].name
 		});
-	}
+	}/**/
 
 	if (!data) {
 		return <div></div>;
@@ -111,10 +116,16 @@ export default function App() {
 		data.action === "Waiting Results" ||
 		data.action === "View Results" ||
 		data.action === "View Any Result" ||
-		data.action === "Display Map" ||
-		data.action === "Call Taxi Service"
+		data.action === "Display Map"
 	) {
 		return <Results data={data} to={to} />;
+	} else if (
+		data.action === "Call Taxi Service" ||
+		data.action === "Review Taxi Service" ||
+		data.action === "Unsatisfy With Taxi Service" ||
+		data.action === "Satisfy With Taxi Service"
+	) {
+		return <Call data={data} to={to} hit={hit} />;
 	} else {
 		return <div>There is an error.</div>;
 	}

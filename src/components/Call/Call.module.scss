@@ -1,0 +1,45 @@
+.main{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+	width: 100%;
+	height: 100%;
+  padding: 8px;
+  
+	// Style
+  background-color: #FFF;
+  
+  //content
+  text-align: center;
+
+
+  //Content
+  & > div:first-child{
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  
+    flex: 1;
+
+    *:first-child{
+      margin-bottom: 16px;
+    }
+
+    h1{
+      font-weight: bold;
+    }
+
+  }
+
+  //Softbar
+  & > div:last-child{
+    
+  }
+
+
+  
+  
+}
