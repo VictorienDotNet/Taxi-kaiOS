@@ -32,7 +32,11 @@ export default function App() {
 		}
 
 		//configure properties based on the event
-		if (a === "Call Taxi Service")
+		if (
+			a === "Call Taxi Service" ||
+			a === "Satisfy With Taxi Service" ||
+			a === "Unsatisfy With Taxi Service"
+		)
 			properties = {
 				phone: ranks[index].phone,
 				name: ranks[index].name
