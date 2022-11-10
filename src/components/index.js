@@ -7,3 +7,4 @@ export * from "./Onboarding/Onboarding";
 export * from "./Results/Results";
 export * from "./Call/Call";
 export * from "./Button/Button";
+export * from "./Feedback/Feedback";

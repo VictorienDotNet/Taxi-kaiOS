@@ -5,7 +5,7 @@ import {
 	Map,
 	MyPosition,
 	Rank,
-	AdsButton,
+	Feedback,
 	Card
 } from "../../components";
 
@@ -108,7 +108,7 @@ export function Results({ data, to }) {
 			</Map>
 			{!isMap && (
 				<>
-					<AdsButton />
+					<Feedback />
 					<Card data={data}></Card>
 					<Softkey>{softactions()}</Softkey>
 				</>

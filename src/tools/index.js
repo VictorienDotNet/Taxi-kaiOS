@@ -3,3 +3,4 @@ export * from "./geometry";
 export * from "./getCurrentPosition";
 export * from "./openSettings";
 export * from "./analytics";
+export * from "./openWhatsApp";

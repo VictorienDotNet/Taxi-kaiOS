@@ -1,0 +1,25 @@
+.button {
+	position: absolute;
+	z-index: 2;
+	vertical-align: middle;
+	right: 12px;
+	top: 8px;
+	padding: 8px;
+
+	background-color: #fff;
+	border-radius: 4px;
+
+	font-size: 0.75em;
+	line-height: 1.2em;
+	text-transform: uppercase;
+}
+
+.button span {
+	display: inline-block;
+	min-width: 1.25em;
+	padding: 0 4px;
+	border: 1px solid rgba(0, 0, 0, 0.9); /*@color-text*/
+	border-radius: 2px;
+
+	text-align: center;
+}
