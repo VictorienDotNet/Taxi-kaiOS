@@ -22,6 +22,8 @@
   },
   "default_locale": "en-GB",
   "permissions": {
+    "mobiledata":{},
+    "wifidata":{},
     "geolocation": {
       "description": "Required to find taxi ranks from your location"
     }
