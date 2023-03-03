@@ -1,0 +1,7 @@
+{
+	"external": true,
+	"installOrigin": "app://app.kaios.taxi/",
+	"manifestURL": "https://app.kaios.taxi/manifest.webapp",
+	"removable": true,
+	"type": "hosted"
+}
