@@ -5,7 +5,6 @@ import {
 	Map,
 	MyPosition,
 	Rank,
-	AdsButton,
 	Card
 } from "../../components";
 
@@ -94,7 +93,7 @@ export function Results({ data, to }) {
 	};
 	/**/
 
-	//Will desactivate ads and card when the map will show up
+	//Will desactivate card when the map will show up
 	let isMap = action === "Display Map" ? true : false;
 	let isRanks = ranks && ranks.length > 0 ? true : false;
 
@@ -108,7 +107,6 @@ export function Results({ data, to }) {
 			</Map>
 			{!isMap && (
 				<>
-					<AdsButton />
 					<Card data={data}></Card>
 					<Softkey>{softactions()}</Softkey>
 				</>
