@@ -1,4 +1,9 @@
+//documentatons:
+
+//- https://stackoverflow.com/questions/10077606/check-if-geolocation-was-allowed-and-get-lat-lon#35628523
+
 export const getCurrentPosition = (success, denied, error) => {
+  navigator.permissions.query({ name: "geolocation" }).then(console.log)
   //We will store the amount of fail into failcount,
   //We will use later to determinate when to give up.
   let failcount = 0;
