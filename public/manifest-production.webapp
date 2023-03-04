@@ -33,6 +33,5 @@
       "description": "Required to find taxi ranks from your location"
     }
   },
-  "fullscreen": "true",
-  "orientation": "portrait"
+  "fullscreen": "true"
 }
