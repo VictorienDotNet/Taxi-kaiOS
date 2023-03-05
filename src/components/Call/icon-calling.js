@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import css from "./Call.module.scss";
+import React from "react";
 
 export function Graphic(props) {
 	return (
