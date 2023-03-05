@@ -49,19 +49,21 @@ export const Map = React.forwardRef((props, ref) => {
 		}
 	}, [children]);
 
+	/* USEFULL LINKS 
 	var mapboxUrl =
 		"https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}";
 	var accessToken =
 		"pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
 	var id = "light-v9";
 
-	var classicTiles =
-		"https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
-
 	var MyTiles =
 		"https://api.mapbox.com/styles/v1/bvictorien/cl668wlli001515rvn4aobdou/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
 
 	var osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+	/**/
+
+	var classicTiles =
+		"https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
 
 	return (
 		<div
