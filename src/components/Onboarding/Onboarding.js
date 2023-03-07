@@ -50,7 +50,7 @@ export function Onboarding(props) {
 
 			return (
 				<Wrapper>
-					<p>Searching the stars for your location…</p>
+					<p>We're searching for your position…</p>
 					<button disabled>Near Me</button>
 					<button disabled>Choose On Map</button>
 				</Wrapper>
