@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import css from "./Onboarding.module.scss";
 import { GetPositionButton } from "./GetPositionButton";
 
