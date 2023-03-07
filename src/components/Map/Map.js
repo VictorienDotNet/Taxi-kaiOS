@@ -137,6 +137,11 @@ const Set = React.forwardRef((props, ref) => {
 					coords: normalizeCoords(map.getCenter(), "map")
 				});
 			}
+		} else if (evt.key === "Backspace") {
+			if (to) {
+				to("Choose Location");
+			}
+
 		} else {
 			return;
 		}
