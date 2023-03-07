@@ -420,6 +420,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 /* attribution and scale controls */
 
 .leaflet-container .leaflet-control-attribution {
+	display: none; /* Added by Victorien */
 	background: #fff;
 	background: rgba(255, 255, 255, 0.7);
 	margin: 8;
