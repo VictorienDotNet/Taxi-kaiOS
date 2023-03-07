@@ -3,8 +3,10 @@ import L from "leaflet";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { normalizeCoords } from "../../tools/getCurrentPosition";
 import css from "./Map.module.css";
+import { getBounds, getCenter } from "../../tools";
 import { ReactComponent as Target } from "./images/target.svg";
 import "./Leaflet.1.7.1.css";
+
 
 //export function Map({ center, children, zoom }) {
 export const Map = React.forwardRef((props, ref) => {
@@ -14,6 +16,8 @@ export const Map = React.forwardRef((props, ref) => {
 
 	/* DEFINE THE BOUNDS */
 	let [bounds, setBounds] = useState([]);
+	let [params, setParams] = useState([]);
+
 
 	/* We will define the higest and lowest bound's lattitudes and longitudes. By definition, latitude go from Nord to South with a scale of 90 to -90 and longitude go from West to Est with a scale of -180 to 180. If `A` is the Nord-Ouest corner, A.lgt should be the lowest value and A.lat should be the highest value. If `B` is the South-East corner, B.lgt should be the higgest value and B.lat should be the lowest value. */
 	//N.B.: I could do it more simple https://stackoverflow.com/questions/27451152/fitbounds-of-markers-with-leaflet
@@ -25,8 +29,15 @@ export const Map = React.forwardRef((props, ref) => {
 
 		// We will compare coords children
 
+		const ranks = children.filter((child)=>{
+			return child.type.name!=="MyPosition"
+		})
+
+		console.log(ranks)
+
 		if (children) {
 			children.forEach((child) => {
+				
 				if (child && child.props.position) {
 					// Marker should have a position property where the firs value of the array is the latitude and the second value of the array is the longitutde.
 					let C = child.props.position[0]; //lat
@@ -43,7 +54,12 @@ export const Map = React.forwardRef((props, ref) => {
 				}
 			});
 			//Create the Bounds Object
-			setBounds(L.latLngBounds(L.latLng(A.lat, A.lgt), L.latLng(B.lat, B.lgt)));
+			const bounds = L.latLngBounds(L.latLng(A.lat, A.lgt), L.latLng(B.lat, B.lgt));
+			setParams({
+				defaultCenter: bounds.getCenter(),
+				bounds: bounds
+			})
+			setBounds(bounds);
 		} else {
 			setBounds(L.latLngBounds(L.latLng(30, -60), L.latLng(-30, 60)));
 		}
