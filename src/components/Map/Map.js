@@ -29,13 +29,14 @@ export const Map = React.forwardRef((props, ref) => {
 
 		// We will compare coords children
 
-		const ranks = children.filter((child)=>{
-			return child.type.name!=="MyPosition"
-		})
-
-		console.log(ranks)
-
+	
 		if (children) {
+			const pointsZoomSnapping = children.filter((child)=>{
+				return child.props.zoomSnapping;
+			})
+	
+			console.log(pointsZoomSnapping);
+
 			children.forEach((child) => {
 				
 				if (child && child.props.position) {
@@ -57,7 +58,7 @@ export const Map = React.forwardRef((props, ref) => {
 			const bounds = L.latLngBounds(L.latLng(A.lat, A.lgt), L.latLng(B.lat, B.lgt));
 			setParams({
 				defaultCenter: bounds.getCenter(),
-				bounds: bounds
+				defaultBounds: bounds
 			})
 			setBounds(bounds);
 		} else {
@@ -65,21 +66,9 @@ export const Map = React.forwardRef((props, ref) => {
 		}
 	}, [children]);
 
-	/* USEFULL LINKS 
-	var mapboxUrl =
-		"https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}";
-	var accessToken =
-		"pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
-	var id = "light-v9";
+	const token = "pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
 
-	var MyTiles =
-		"https://api.mapbox.com/styles/v1/bvictorien/cl668wlli001515rvn4aobdou/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
-
-	var osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-	/**/
-
-	var classicTiles =
-		"https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
+	const tiles = "https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token="+ token;
 
 	return (
 		<div
@@ -94,7 +83,7 @@ export const Map = React.forwardRef((props, ref) => {
 			)}
 			{center && (
 				<MapContainer className={css.Map} keyboardPanDelta={0}>
-					<TileLayer url={classicTiles} />
+					<TileLayer url={tiles} />
 					{children}
 					<Set bounds={bounds} ref={ref} to={to} keyboard={keyboard} />
 				</MapContainer>
@@ -202,3 +191,16 @@ const Set = React.forwardRef((props, ref) => {
  * https://www.abstractapi.com/guides/how-to-use-ip-geolocation-in-react
  
  */
+
+ 	/* USEFULL LINKS 
+	var mapboxUrl =
+		"https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}";
+	var accessToken =
+		"pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
+	var id = "light-v9";
+
+	var MyTiles =
+		"https://api.mapbox.com/styles/v1/bvictorien/cl668wlli001515rvn4aobdou/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
+
+	var osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+	/**/

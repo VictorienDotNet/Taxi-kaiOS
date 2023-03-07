@@ -102,7 +102,7 @@ export function Results({ data, to }) {
 			<Map center={coords} keyboard={isMap}>
 				{coords && <MyPosition position={coords} />}
 				{isRanks && ranks[index].type !== "phone" && (
-					<Rank position={[ranks[index].lat, ranks[index].lng]} />
+					<Rank position={[ranks[index].lat, ranks[index].lng]} zoomSnapping />
 				)}
 			</Map>
 			{!isMap && (
