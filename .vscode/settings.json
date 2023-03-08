@@ -1,6 +1,12 @@
 {
+  //See the manifest as a JSON
   "files.associations": {
-    "*.webapp": "json",
+    "*.webapp": "json"
   },
-  "editor.wordWrap": "on"
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.wordWrap": "on",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
