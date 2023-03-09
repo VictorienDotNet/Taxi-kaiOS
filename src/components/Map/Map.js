@@ -3,7 +3,7 @@ import L from "leaflet";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { normalizeCoords } from "../../tools/getCurrentPosition";
 import css from "./Map.module.css";
-import { getBounds, getCenter } from "../../tools";
+import { getBounds, getZoomLevel } from "../../tools";
 import { ReactComponent as Target } from "./images/target.svg";
 import "./Leaflet.1.7.1.css";
 
@@ -14,7 +14,7 @@ export const Map = React.forwardRef((props, ref) => {
   // This ref is use to update map parameters */
 
   /* DEFINE THE BOUNDS */
-  let [params, setParams] = useState([]);
+  let [params, setParams] = useState({});
 
   /* We will define the higest and lowest bound's lattitudes and longitudes. By definition, latitude go from Nord to South with a scale of 90 to -90 and longitude go from West to Est with a scale of -180 to 180. If `A` is the Nord-Ouest corner, A.lgt should be the lowest value and A.lat should be the highest value. If `B` is the South-East corner, B.lgt should be the higgest value and B.lat should be the lowest value. */
   //N.B.: I could do it more simple https://stackoverflow.com/questions/27451152/fitbounds-of-markers-with-leaflet
@@ -39,19 +39,19 @@ export const Map = React.forwardRef((props, ref) => {
         return child.props.position;
       });
 
+      const minZoom = getZoomLevel(defaultBounds, { width: 240, height: 320 });
+
       const defaultLeafletBounds = L.latLngBounds(
         L.latLng(defaultBounds.NE.lat, defaultBounds.NE.lng),
         L.latLng(defaultBounds.SW.lat, defaultBounds.SW.lng)
       );
 
-      //Set the Bounds as Leaflet object
-
       setParams({
         minCenter: defaultLeafletBounds.getCenter(),
-        minZoom: L.getBoundsZoom(defaultLeafletBounds),
+        minZoom: minZoom,
         defaultBounds: defaultLeafletBounds,
         maxCenter: zoomMaxLeafletBounds.getCenter(),
-        maxZoom: L.getBoundsZoom(zoomMaxLeafletBounds),
+        maxZoom: 22,
       });
     } else {
       setParams({
@@ -82,7 +82,7 @@ export const Map = React.forwardRef((props, ref) => {
         <MapContainer className={css.Map} keyboardPanDelta={0}>
           <TileLayer url={tiles} />
           {children}
-          <Set ref={ref} to={to} keyboard={keyboard} {...params} />
+          <Set ref={ref} to={to} keyboard={keyboard} params={params} />
         </MapContainer>
       )}
       <div className={css.Softkeys}>
@@ -99,15 +99,10 @@ export const Map = React.forwardRef((props, ref) => {
 /* MapContainer props are immutable: changing them after they have been set a first time will have no effect on the Map instance or its container. The Leaflet Map instance created by the MapContainer element can be accessed by child components using one of the provided hooks or the MapConsumer component. The component is use to triger re-render on the map */
 
 const Set = React.forwardRef((props, ref) => {
-  const {
-    to,
-    keyboard,
-    defaultBounds,
-    minCenter,
-    minZoom,
-    maxCenter,
-    maxZoom,
-  } = props;
+  const { to, keyboard, params } = props;
+
+  let { minCenter, minZoom, maxCenter, maxZoom, defaultBounds } = params;
+
   const map = useMap();
 
   if (ref) {
@@ -120,9 +115,19 @@ const Set = React.forwardRef((props, ref) => {
   //Then, we define the onKeyDown function
   const onKeyDown = (evt) => {
     if (evt.key === "1") {
-      map.zoomOut();
+      const zoom = map.getZoom();
+      if (zoom <= minZoom - 1) {
+        map.flyTo(minCenter, zoom - 1);
+      } else {
+        map.flyTo(maxCenter, zoom - 1);
+      }
     } else if (evt.key === "3") {
-      map.zoomIn();
+      const zoom = map.getZoom();
+      if (zoom >= minZoom - 1) {
+        map.flyTo(maxCenter, zoom + 1);
+      } else {
+        map.flyTo(minCenter, zoom + 1);
+      }
     }
     if (!keyboard) return false;
     //Events related to zoom
@@ -161,7 +166,7 @@ const Set = React.forwardRef((props, ref) => {
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [keyboard]);
+  }, [keyboard, minCenter, minZoom, maxCenter, maxZoom, defaultBounds]);
 
   // We adjust the bounds of the map. We can use fitBounds for no animation and flyToBounds for animation.
   useEffect(() => {
