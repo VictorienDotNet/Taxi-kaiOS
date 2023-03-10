@@ -3,7 +3,7 @@ import L from "leaflet";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { normalizeCoords } from "../../tools/getCurrentPosition";
 import css from "./Map.module.css";
-import { getBounds, getZoomLevel } from "../../tools";
+import { getBounds, getZoomLevel, getCenter } from "../../tools";
 import { ReactComponent as Target } from "./images/target.svg";
 import "./Leaflet.1.7.1.css";
 
@@ -14,50 +14,67 @@ export const Map = React.forwardRef((props, ref) => {
   // This ref is use to update map parameters */
 
   /* DEFINE THE BOUNDS */
-  let [params, setParams] = useState({});
+  let [params, setParams] = useState({
+    defaultBounds: L.latLngBounds(L.latLng(30, -60), L.latLng(-0, 60)),
+  });
 
   /* We will define the higest and lowest bound's lattitudes and longitudes. By definition, latitude go from Nord to South with a scale of 90 to -90 and longitude go from West to Est with a scale of -180 to 180. If `A` is the Nord-Ouest corner, A.lgt should be the lowest value and A.lat should be the highest value. If `B` is the South-East corner, B.lgt should be the higgest value and B.lat should be the lowest value. */
   //N.B.: I could do it more simple https://stackoverflow.com/questions/27451152/fitbounds-of-markers-with-leaflet
 
   useEffect(() => {
-    if (children) {
-      //Figure Out which points we will focus during the Zoom in
-      const pointsZoomSnapping = children.filter((child) => {
-        return child.props.zoomSnapping;
+    if (!children) return;
+
+    /* DEFINE THE BOUNDS */
+    let defaultBounds, defaultLeafletBounds, minZoom, minCenter;
+
+    // Select childrens which we will put in the inital bounds
+    const boundable = children.filter((child) => {
+      return child && child.props && child.props.boundable;
+    });
+
+    // Calculate associated value to the bounds
+    if (boundable) {
+      defaultBounds = getBounds(boundable, (child) => {
+        return child && child.props && child.props.position;
       });
 
-      const zoomMaxBounds = getBounds(pointsZoomSnapping, (child) => {
-        return child.props.position;
-      });
-
-      const zoomMaxLeafletBounds = L.latLngBounds(
-        L.latLng(zoomMaxBounds.NE.lat, zoomMaxBounds.NE.lng),
-        L.latLng(zoomMaxBounds.SW.lat, zoomMaxBounds.SW.lng)
-      );
-
-      const defaultBounds = getBounds(children, (child) => {
-        return child.props.position;
-      });
-
-      const minZoom = getZoomLevel(defaultBounds, { width: 240, height: 320 });
-
-      const defaultLeafletBounds = L.latLngBounds(
+      defaultLeafletBounds = L.latLngBounds(
         L.latLng(defaultBounds.NE.lat, defaultBounds.NE.lng),
         L.latLng(defaultBounds.SW.lat, defaultBounds.SW.lng)
       );
 
-      setParams({
-        minCenter: defaultLeafletBounds.getCenter(),
-        minZoom: minZoom,
-        defaultBounds: defaultLeafletBounds,
-        maxCenter: zoomMaxLeafletBounds.getCenter(),
-        maxZoom: 22,
-      });
-    } else {
-      setParams({
-        defaultBounds: L.latLngBounds(L.latLng(30, -60), L.latLng(-30, 60)),
-      });
+      minZoom = getZoomLevel(defaultBounds, { width: 240, height: 240 });
+      minCenter = defaultLeafletBounds.getCenter();
     }
+
+    /* DEFINE THE SNAPPING DURING ZOOM */
+    let maxCenter, maxCenterBounds, maxCenterLeafletBounds;
+
+    //Select childrens which we will focus during zoom
+    const zoomable = children.filter((child) => {
+      return child && child.props && child.props.zoomable;
+    });
+
+    if (zoomable) {
+      maxCenterBounds = getBounds(zoomable, (child) => {
+        return child && child.props && child.props.position;
+      });
+
+      maxCenterLeafletBounds = L.latLngBounds(
+        L.latLng(maxCenterBounds.NE.lat, maxCenterBounds.NE.lng),
+        L.latLng(maxCenterBounds.SW.lat, maxCenterBounds.SW.lng)
+      );
+
+      maxCenter = maxCenterLeafletBounds.getCenter();
+    }
+
+    setParams({
+      minCenter: minCenter,
+      minZoom: minZoom,
+      defaultBounds: defaultLeafletBounds,
+      maxCenter: maxCenter,
+      maxZoom: 22,
+    });
   }, [children]);
 
   const token =
@@ -73,7 +90,7 @@ export const Map = React.forwardRef((props, ref) => {
       data-fullscreen={keyboard}
       data-update={to ? true : false}
     >
-      {to && (
+      {keyboard && (
         <div className={css.Target}>
           <Target />
         </div>
@@ -114,26 +131,38 @@ const Set = React.forwardRef((props, ref) => {
   const i = 25;
   //Then, we define the onKeyDown function
   const onKeyDown = (evt) => {
-    if (evt.key === "1") {
+    if (evt.key === "1" && !keyboard) {
       const zoom = map.getZoom();
-      if (zoom <= minZoom - 1) {
-        map.flyTo(minCenter, zoom - 1);
+
+      if (zoom <= minZoom) {
+        map.panTo(minCenter);
       } else {
-        map.flyTo(maxCenter, zoom - 1);
+        console.log(maxCenter);
+        map.panTo(maxCenter);
       }
-    } else if (evt.key === "3") {
+      setTimeout(() => {
+        map.zoomOut();
+      }, 200);
+    } else if (evt.key === "3" && !keyboard) {
       const zoom = map.getZoom();
-      if (zoom >= minZoom - 1) {
-        map.flyTo(maxCenter, zoom + 1);
+
+      console.log(zoom + ">=" + minZoom, zoom >= minZoom);
+
+      if (zoom >= minZoom) {
+        map.panTo(maxCenter);
       } else {
-        map.flyTo(minCenter, zoom + 1);
+        map.panTo(minCenter);
       }
+      setTimeout(() => {
+        map.zoomIn();
+      }, 200);
     }
+
     if (!keyboard) return false;
     //Events related to zoom
-    if (evt.key === "SoftLeft") {
+    if (evt.key === "SoftLeft" || evt.key === "1") {
       map.zoomOut();
-    } else if (evt.key === "SoftRight") {
+    } else if (evt.key === "SoftRight" || evt.key === "3") {
       map.zoomIn();
       //Events related to zoom
     } else if (evt.key === "ArrowUp") {
