@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import css from "./Call.module.scss";
-import { Button } from "../../components";
 import { useNavigation } from "../../hooks";
 import { Graphic } from "./icon-calling.js";
 import { ReactComponent as IconPositiveAnswer } from "./icon-review-positive-answer.svg";

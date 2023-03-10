@@ -1,0 +1,37 @@
+{
+  "version": "1.1.2.0",
+	"type": "web",
+  "name": "Taxi",
+	"display": "Taxi",
+  "description": "Find the closest taxi ranks. Get local taxi numbers.",
+	"subtitle": "Find the closest taxi",
+	"theme": "#000000",
+  "launch_path": "/index.html",
+	"origin": "http://victorien.local:3000/",
+	"developer": {
+    "name": "Taxi",
+    "url": "https://kaios.taxi"
+  },
+  "icons": {
+    "56": "/icon/alpha/app@56w.png",
+		"84": "/icon/alpha/app@84w.png",
+    "112": "/icon/alpha/app@112w.png",
+    "128": "/icon/alpha/app@128w.png"
+  },
+  "locales": {
+    "en-GB": {
+      "name": "Taxi",
+      "subtitle": "Find the closest taxi",
+      "description": "Find the closest taxi ranks. Get local taxi numbers."
+    }
+  },
+  "default_locale": "en-GB",
+  "permissions": {
+    "mobiledata":{},
+    "wifidata":{},
+    "geolocation": {
+      "description": "Required to find taxi ranks from your location"
+    }
+  },
+  "fullscreen": "true"
+}
