@@ -2,8 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import css from "./Onboarding.module.scss";
 import { getCurrentPosition, normalizeCoords, openSettings } from "../../tools";
 import { useNavigation } from "../../hooks";
-import { Earth } from "./Earth";
-import { ReactComponent as Sign } from "./sign.svg";
+import { GetPositionButton, Button } from "../../components";
 
 export function Onboarding(props) {
   const { data, to } = props;
@@ -28,22 +27,12 @@ export function Onboarding(props) {
   }, []);
 
   switch (data.action) {
-    case "Learn Basics":
-      return (
-        <div className={css.onboarding}>
-          <div className={css.SolarSystem}>
-            <Sign />
-          </div>
-          <p>Find easily taxi stand around.</p>
-          <button onClick={() => to("Choose Location")}>Continue</button>
-        </div>
-      );
     case "Choose Location":
       return (
         <Wrapper>
           <p>Where do you want to find taxis?</p>
-          <button onClick={() => to("Waiting Location")}>Near Me</button>
-          <button onClick={() => to("Choose On Map")}>Choose On Map</button>
+          <Button onClick={() => to("Waiting Location")}>Near Me</Button>
+          <Button onClick={() => to("Choose On Map")}>Choose On Map</Button>
         </Wrapper>
       );
     case "Waiting Location":
@@ -61,8 +50,8 @@ export function Onboarding(props) {
       return (
         <Wrapper>
           <p>We're searching for your position…</p>
-          <button disabled>Near Me</button>
-          <button disabled>Choose On Map</button>
+          <Button disabled>Near Me</Button>
+          <Button disabled>Choose On Map</Button>
         </Wrapper>
       );
     case "Got Location":
@@ -72,8 +61,8 @@ export function Onboarding(props) {
       return (
         <Wrapper>
           <p>We found you.</p>
-          <button disabled>Near Me</button>
-          <button disabled>Choose On Map</button>
+          <Button disabled>Near Me</Button>
+          <Button disabled>Choose On Map</Button>
         </Wrapper>
       );
     case "Handle Denied Location":
@@ -83,17 +72,17 @@ export function Onboarding(props) {
             You denied the geolocation permission. If you want share your
             location, grant access through the settings.
           </p>
-          <button onClick={openSettings}>Settings</button>
-          <button onClick={() => to("Choose On Map")}>Choose On Map</button>
-          <button onClick={() => to("Waiting Location")}>Retry</button>
+          <Button onClick={openSettings}>Settings</Button>
+          <Button onClick={() => to("Choose On Map")}>Choose On Map</Button>
+          <Button onClick={() => to("Waiting Location")}>Retry</Button>
         </Wrapper>
       );
     case "Handle Location Error":
       return (
         <Wrapper>
           <p>We didn't success to retrieve your location.</p>
-          <button onClick={() => to("Choose On Map")}>Choose On Map</button>
-          <button onClick={() => to("Waiting Location")}>Retry</button>
+          <Button onClick={() => to("Choose On Map")}>Choose On Map</Button>
+          <Button onClick={() => to("Waiting Location")}>Retry</Button>
         </Wrapper>
       );
     default:
@@ -104,7 +93,10 @@ export function Onboarding(props) {
 const Wrapper = ({ children, props }) => {
   return (
     <div className={css.onboarding}>
-      <Earth />
+      <div className={css.SolarSystem}>
+        <div data-flag="flag"></div>
+        <GetPositionButton />
+      </div>
       {children}
     </div>
   );

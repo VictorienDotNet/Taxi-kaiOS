@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { normalizeCoords } from "../../tools/getCurrentPosition";
 import css from "./Map.module.css";
 import { getBounds, getZoomLevel, getCenter } from "../../tools";
+import { ReactComponent as Target } from "./images/target.svg";
 import "./Leaflet.1.7.1.css";
 
 //export function Map({ center, children, zoom }) {
@@ -89,6 +90,11 @@ export const Map = React.forwardRef((props, ref) => {
       data-fullscreen={keyboard}
       data-update={to ? true : false}
     >
+      {keyboard && (
+        <div className={css.Target}>
+          <Target />
+        </div>
+      )}
       {center && (
         <MapContainer className={css.Map} keyboardPanDelta={0}>
           <TileLayer url={tiles} />
@@ -96,6 +102,11 @@ export const Map = React.forwardRef((props, ref) => {
           <Set ref={ref} to={to} keyboard={keyboard} params={params} />
         </MapContainer>
       )}
+      <div className={css.Softkeys}>
+        <div>Zoom out</div>
+        <div>Select</div>
+        <div>Zoom In</div>
+      </div>
     </div>
   );
 }); /**/
@@ -126,6 +137,7 @@ const Set = React.forwardRef((props, ref) => {
       if (zoom <= minZoom) {
         map.panTo(minCenter);
       } else {
+        console.log(maxCenter);
         map.panTo(maxCenter);
       }
       setTimeout(() => {
@@ -133,6 +145,8 @@ const Set = React.forwardRef((props, ref) => {
       }, 200);
     } else if (evt.key === "3" && !keyboard) {
       const zoom = map.getZoom();
+
+      console.log(zoom + ">=" + minZoom, zoom >= minZoom);
 
       if (zoom >= minZoom) {
         map.panTo(maxCenter);
@@ -198,3 +212,33 @@ const Set = React.forwardRef((props, ref) => {
 
   return null;
 });
+
+/* USEFULL LINKS, DATA AND API */
+
+/**
+ * We could improve the first view of the map by zooming on the country of the users. To perform that without knowing his accurate location, we could use IP localisation API. We found three API for that:
+ 
+ 1. ipinfo.io
+ * https://ipinfo.io/blog/replacing-getcurrentposition
+
+ 2. country.is + country coords
+ * https://www.npmjs.com/package/react-ipgeolocation
+ * https://developers.google.com/public-data/docs/canonical/countries_csv
+ 
+ 3. Abstract API
+ * https://www.abstractapi.com/guides/how-to-use-ip-geolocation-in-react
+ 
+ */
+
+/* USEFULL LINKS 
+	var mapboxUrl =
+		"https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}";
+	var accessToken =
+		"pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
+	var id = "light-v9";
+
+	var MyTiles =
+		"https://api.mapbox.com/styles/v1/bvictorien/cl668wlli001515rvn4aobdou/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
+
+	var osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+	/**/

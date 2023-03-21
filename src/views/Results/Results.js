@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
-import { Softkey, Map, MyPosition, Rank, Card } from "../../components";
+import { Softkey, Map, Marker, Card } from "../../components";
 
 import { fetch } from "../../tools";
 
@@ -94,9 +94,10 @@ export function Results({ data, to }) {
   return (
     <>
       <Map center={coords} keyboard={isMap}>
-        {coords && <MyPosition position={coords} boundable />}
+        {coords && <Marker name="my-position" position={coords} boundable />}
         {isRanks && ranks[index].type !== "phone" && (
-          <Rank
+          <Marker
+            name="rank"
             position={[ranks[index].lat, ranks[index].lng]}
             boundable
             zoomable

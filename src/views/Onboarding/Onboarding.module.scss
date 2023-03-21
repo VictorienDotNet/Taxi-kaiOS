@@ -16,30 +16,6 @@
     justify-content: center;
     text-align: center;
   }
-
-  button {
-    // Layout
-    display: inline-block;
-    margin: auto;
-    padding: 8px 16px;
-    // Style
-    border-radius: 8px;
-    background-color: rgba(0, 90, 224, 0);
-    //Text
-    color: #005ae0;
-    font-weight: 600; //Should be 700 (bold), but too strong
-
-    &:focus:not([disabled]) {
-      background-color: rgba(0, 90, 224, 0.12);
-    }
-
-    &[disabled] {
-      color: #989898;
-    }
-    &[disabled]:first-of-type {
-      background-color: rgba(152, 152, 152, 0.12);
-    }
-  }
 }
 
 .SolarSystem {
@@ -63,7 +39,7 @@
 
     border-radius: 50%;
     background-color: #0071de;
-    background-image: url(./assets/mapmonde.svg);
+    background-image: url(./asset-world.svg);
     background-position: 0 center;
 
     animation-name: worldtour;
@@ -71,25 +47,6 @@
     animation-delay: 150ms;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
-  }
-}
-
-.GetPositionButton {
-  position: absolute;
-  bottom: 20px;
-  right: 16px;
-
-  width: 56px;
-  height: 56px;
-  padding: 12px;
-
-  background-color: #fff;
-  border-radius: 50%;
-  box-shadow: rgba(0, 0, 0, 0.16) 0 0 0 6px;
-
-  svg {
-    width: 32px;
-    height: 32px;
   }
 }
 

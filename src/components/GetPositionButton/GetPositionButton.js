@@ -1,6 +1,6 @@
 import React from "react";
-import css from "./Onboarding.module.scss";
-import { ReactComponent as Disabled } from "./LocationDisabled.svg";
+import css from "./GetPositionButton.module.scss";
+import { Icon } from "../";
 
 /* MARKERS */
 
@@ -8,9 +8,9 @@ import { ReactComponent as Disabled } from "./LocationDisabled.svg";
 
 // MyPosition: Display a blue dot on the user's position.
 export function GetPositionButton(props) {
-	return (
-		<div className={css.GetPositionButton}>
-			<Disabled />
-		</div>
-	);
+  return (
+    <div className={css.main}>
+      <Icon name="location-disabled" />
+    </div>
+  );
 } /**/
