@@ -8,7 +8,7 @@ import "./Leaflet.1.7.1.css";
 
 //export function Map({ center, children, zoom }) {
 export const Map = React.forwardRef((props, ref) => {
-  const { center = [0, 0], children, keyboard = true, to } = props;
+  const { center = [0, 0], children, keyboard = true, to, className } = props;
   /* SETUP REF */
   // This ref is use to update map parameters */
 
@@ -21,7 +21,7 @@ export const Map = React.forwardRef((props, ref) => {
   //N.B.: I could do it more simple https://stackoverflow.com/questions/27451152/fitbounds-of-markers-with-leaflet
 
   useEffect(() => {
-    if (!children) return;
+    if (!Array.isArray(children)) return;
 
     /* DEFINE THE BOUNDS */
     let defaultBounds, defaultLeafletBounds, minZoom, minCenter;
@@ -114,74 +114,6 @@ const Set = React.forwardRef((props, ref) => {
   if (ref) {
     ref.current = map;
   }
-
-  /* Here, we setup all keyboard actions*/
-  //First, we define the incremental int from the keyboard
-  const i = 25;
-  //Then, we define the onKeyDown function
-  const onKeyDown = (evt) => {
-    if (evt.key === "1" && !keyboard) {
-      const zoom = map.getZoom();
-
-      if (zoom <= minZoom) {
-        map.panTo(minCenter);
-      } else {
-        map.panTo(maxCenter);
-      }
-      setTimeout(() => {
-        map.zoomOut();
-      }, 200);
-    } else if (evt.key === "3" && !keyboard) {
-      const zoom = map.getZoom();
-
-      if (zoom >= minZoom) {
-        map.panTo(maxCenter);
-      } else {
-        map.panTo(minCenter);
-      }
-      setTimeout(() => {
-        map.zoomIn();
-      }, 200);
-    }
-
-    if (!keyboard) return false;
-    //Events related to zoom
-    if (evt.key === "SoftLeft" || evt.key === "1") {
-      map.zoomOut();
-    } else if (evt.key === "SoftRight" || evt.key === "3") {
-      map.zoomIn();
-      //Events related to zoom
-    } else if (evt.key === "ArrowUp") {
-      map.panBy([0, -i], { animate: true });
-    } else if (evt.key === "ArrowDown") {
-      map.panBy([0, i], { animate: true });
-    } else if (evt.key === "ArrowLeft") {
-      map.panBy([-i, 0], { animate: true });
-    } else if (evt.key === "ArrowRight") {
-      map.panBy([i, 0], { animate: true });
-      //This last entry, trigger the onSubmit function and sent back the center of the map to the parent
-    } else if (evt.key === "Enter") {
-      //Go to display the results according to the coords
-      if (to) {
-        to({
-          coords: normalizeCoords(map.getCenter(), "map"),
-        });
-      }
-    } else if (evt.key === "Backspace") {
-      if (to) {
-        to("Choose Location");
-      }
-    } else {
-      return;
-    }
-    evt.preventDefault();
-  };
-  //Secondly,  We mount the onKeyDown when the app start
-  useEffect(() => {
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [keyboard, minCenter, minZoom, maxCenter, maxZoom, defaultBounds]);
 
   // We adjust the bounds of the map. We can use fitBounds for no animation and flyToBounds for animation.
   useEffect(() => {

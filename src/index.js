@@ -118,8 +118,8 @@ export default function App() {
     data.action === "Handle Location Error"
   ) {
     return <Onboarding data={data} to={to} />;
-  } else if (data.action === "Choose On Map") {
-    return <Map to={to} />;
+  } else if (data.action === "Choose On Map" || data.action === "Display Map") {
+    return <Map data={data} to={to} />;
   } else if (
     data.action === "Waiting Results" ||
     data.action === "View Results" ||
