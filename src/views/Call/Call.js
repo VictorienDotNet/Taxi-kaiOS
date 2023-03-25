@@ -4,7 +4,7 @@ import { useNavigation } from "../../hooks";
 import { Softkey, Icon } from "../../components";
 
 export function Call(props) {
-  let { data, to } = props;
+  let { data, routeTo } = props;
   let { action, ranks, index } = data;
   let phone = data.ranks[data.index].phone;
 
@@ -12,21 +12,21 @@ export function Call(props) {
 
   const onKeyDown = (evt) => {
     if (evt.key === "Backspace") {
-      to("View Results");
+      routeTo("View Results");
       evt.preventDefault();
     }
   };
 
   const close = () => {
-    to("View Results");
+    routeTo("View Results");
   };
 
   const satisfy = () => {
-    to("Satisfy With Taxi Service");
+    routeTo("Satisfy With Taxi Service");
   };
 
   const unsatisfy = () => {
-    to("Unsatisfy With Taxi Service");
+    routeTo("Unsatisfy With Taxi Service");
   };
 
   /* LISTENER FOR KEY EVENT */
@@ -47,7 +47,7 @@ export function Call(props) {
       }, 500);
       //Go to the Feedback Prompt
       setTimeout(() => {
-        to("Review Taxi Service");
+        routeTo("Review Taxi Service");
       }, 1650);
       return (
         <div className={css.main}>

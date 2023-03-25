@@ -3,8 +3,9 @@ import css from "./Card.module.scss";
 import { getDistance } from "../../tools/geometry.js";
 import { Icon } from "../";
 
-export const Card = ({ data }) => {
-  const { action, ranks, index, coords } = data;
+export const Card = (props) => {
+  const { action, ranks, index, coords } = props.data;
+  const { className } = props;
   /*
 	var dots =
 		ranks &&
@@ -24,13 +25,13 @@ export const Card = ({ data }) => {
   switch (action) {
     case "Waiting Results":
       return (
-        <Wrapper>
+        <Wrapper className={className}>
           <p>Searching available options around…</p>
         </Wrapper>
       );
     case "View Any Result":
       return (
-        <Wrapper>
+        <Wrapper className={className}>
           <p>We didn't find any taxi rank around.</p>
         </Wrapper>
       );
@@ -39,7 +40,7 @@ export const Card = ({ data }) => {
 
       if (item.type === "phone") {
         return (
-          <Wrapper>
+          <Wrapper className={className}>
             <Dots current={index} max={ranks.length} />
             <Phone>
               <span className={css.subheader}>{item.vicinity}</span>
@@ -51,7 +52,7 @@ export const Card = ({ data }) => {
         let dist = getDistance(coords[1], coords[0], item.lng, item.lat);
 
         return (
-          <Wrapper>
+          <Wrapper className={className}>
             <Dots current={index} max={ranks.length} />
             <Rank>
               <span className={css.subheader}>{dist}</span>
@@ -63,7 +64,7 @@ export const Card = ({ data }) => {
 
     default:
       return (
-        <Wrapper>
+        <Wrapper className={className}>
           <p>Looks like there was a problem. Restart the app.</p>
         </Wrapper>
       );
@@ -104,6 +105,6 @@ const Phone = ({ children }) => {
   );
 };
 
-const Wrapper = ({ children }) => {
-  return <div className={css.Card}>{children}</div>;
+const Wrapper = ({ children, className }) => {
+  return <div className={`${css.Card} ${className}`}>{children}</div>;
 };

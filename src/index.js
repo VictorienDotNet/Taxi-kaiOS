@@ -59,7 +59,7 @@ export default function App() {
   /*** State Manager ***/
   // The "to" function handle the states management. Triggered by the compomeents, "to" apply the correct data (e.g. : reseting coords) and redirect to the corresponding view according to the action.
 
-  const to = (input) => {
+  const routeTo = (input) => {
     let output;
     let { coords, ranks, action } = input;
 
@@ -117,23 +117,23 @@ export default function App() {
     data.action === "Handle Denied Location" ||
     data.action === "Handle Location Error"
   ) {
-    return <Onboarding data={data} to={to} />;
+    return <Onboarding data={data} routeTo={routeTo} />;
   } else if (data.action === "Choose On Map" || data.action === "Display Map") {
-    return <Map data={data} to={to} />;
+    return <Map data={data} routeTo={routeTo} />;
   } else if (
     data.action === "Waiting Results" ||
     data.action === "View Results" ||
     data.action === "View Any Result" ||
     data.action === "Display Map"
   ) {
-    return <Results data={data} to={to} />;
+    return <Results data={data} routeTo={routeTo} />;
   } else if (
     data.action === "Call Taxi Service" ||
     data.action === "Review Taxi Service" ||
     data.action === "Unsatisfy With Taxi Service" ||
     data.action === "Satisfy With Taxi Service"
   ) {
-    return <Call data={data} to={to} hit={hit} />;
+    return <Call data={data} routeTo={routeTo} hit={hit} />;
   } else {
     return <div>There is an error.</div>;
   }

@@ -1,99 +1,83 @@
 import React, { useEffect, useState } from "react";
 import L from "leaflet";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
-import { normalizeCoords } from "../../tools/getCurrentPosition";
 import css from "./Map.module.css";
-import { getBounds, getZoomLevel, getCenter } from "../../tools";
+import { getBounds } from "../../tools";
 import "./Leaflet.1.7.1.css";
 
-//export function Map({ center, children, zoom }) {
+/* DEFINE THE DEFAULT MAP PARAMETERS */
+// The initial Zoom and Center are the position parameter of the first openingl; The defaultZoom is use when there is a single marker on the map and not zoom defined
+let initialCenter = [45.52438983143154, -73.59706878662111]; //Montréal
+let initalZoom = 4;
+let defaultZoom = 12;
+let tiles = {
+  username: "mapbox",
+  id: "streets-v9",
+  size: 256, //512 or 256
+  token: process.env.REACT_APP_MAP_TOKEN,
+};
+
 export const Map = React.forwardRef((props, ref) => {
-  const { center = [0, 0], children, keyboard = true, to, className } = props;
-  /* SETUP REF */
-  // This ref is use to update map parameters */
+  /* DEFINE THE PARAMETRES */
+  const { children, className } = props;
+  let [mapProps, setMapProps] = useState(null);
 
-  /* DEFINE THE BOUNDS */
-  let [params, setParams] = useState({
-    defaultBounds: L.latLngBounds(L.latLng(30, -60), L.latLng(-0, 60)),
-  });
+  /* CONSTRUCT THE URL FOR THE TILES */
+  let tilesURL = `https://api.mapbox.com/styles/v1/${tiles.username}/${tiles.id}/tiles/${tiles.size}/{z}/{x}/{y}?access_token=${tiles.token}`;
 
-  /* We will define the higest and lowest bound's lattitudes and longitudes. By definition, latitude go from Nord to South with a scale of 90 to -90 and longitude go from West to Est with a scale of -180 to 180. If `A` is the Nord-Ouest corner, A.lgt should be the lowest value and A.lat should be the highest value. If `B` is the South-East corner, B.lgt should be the higgest value and B.lat should be the lowest value. */
-  //N.B.: I could do it more simple https://stackoverflow.com/questions/27451152/fitbounds-of-markers-with-leaflet
-
+  /* CALCULATE THE MAP BOUNDS BASED ON MARKERS */
+  //We calculate the map bound based on the markers recieve as children. We take in consideration only children with a `boundable` prop.
   useEffect(() => {
-    if (!Array.isArray(children)) return;
+    // If we have multiple children
+    if (Array.isArray(children)) {
+      let boundpoints, bounds;
 
-    /* DEFINE THE BOUNDS */
-    let defaultBounds, defaultLeafletBounds, minZoom, minCenter;
-
-    // Select childrens which we will put in the inital bounds
-    const boundable = children.filter((child) => {
-      return child && child.props && child.props.boundable;
-    });
-
-    // Calculate associated value to the bounds
-    if (boundable) {
-      defaultBounds = getBounds(boundable, (child) => {
-        return child && child.props && child.props.position;
+      // Select childrens which we will put in the inital bounds
+      const boundable = children.filter((child) => {
+        return child && child.props && child.props.boundable;
       });
 
-      defaultLeafletBounds = L.latLngBounds(
-        L.latLng(defaultBounds.NE.lat, defaultBounds.NE.lng),
-        L.latLng(defaultBounds.SW.lat, defaultBounds.SW.lng)
-      );
+      if (boundable) {
+        // Select points at the border of the bounds
+        //TODO: getBounds could directly setup the bounds with the same parameters name than Leaflet Bounds parameter. Maybe it will avoid to use L.latLngBounds function.
+        boundpoints = getBounds(boundable, (child) => {
+          return child && child.props && child.props.position;
+        });
 
-      minZoom = getZoomLevel(defaultBounds, { width: 240, height: 240 });
-      minCenter = defaultLeafletBounds.getCenter();
-    }
+        //Convert into Leaflet object
+        bounds = L.latLngBounds(
+          L.latLng(boundpoints.NE.lat, boundpoints.NE.lng),
+          L.latLng(boundpoints.SW.lat, boundpoints.SW.lng)
+        );
+      }
 
-    /* DEFINE THE SNAPPING DURING ZOOM */
-    let maxCenter, maxCenterBounds, maxCenterLeafletBounds;
-
-    //Select childrens which we will focus during zoom
-    const zoomable = children.filter((child) => {
-      return child && child.props && child.props.zoomable;
-    });
-
-    if (zoomable) {
-      maxCenterBounds = getBounds(zoomable, (child) => {
-        return child && child.props && child.props.position;
+      //update the bounds
+      setMapProps({
+        bounds: bounds,
       });
-
-      maxCenterLeafletBounds = L.latLngBounds(
-        L.latLng(maxCenterBounds.NE.lat, maxCenterBounds.NE.lng),
-        L.latLng(maxCenterBounds.SW.lat, maxCenterBounds.SW.lng)
-      );
-
-      maxCenter = maxCenterLeafletBounds.getCenter();
+      // If we have only one  children
+    } else if (children && children.props.boundable) {
+      //We center the map on the only marker
+      setMapProps({
+        center: children.props.position,
+        zoom: defaultZoom,
+      });
+      //If we have any children, we use the inital bounds
+    } else {
+      setMapProps({
+        center: initialCenter,
+        zoom: initalZoom,
+      });
     }
-
-    setParams({
-      minCenter: minCenter,
-      minZoom: minZoom,
-      defaultBounds: defaultLeafletBounds,
-      maxCenter: maxCenter,
-      maxZoom: 22,
-    });
   }, [children]);
 
-  const token =
-    "pk.eyJ1IjoiYnZpY3RvcmllbiIsImEiOiJja3RycWNhYmMwNGQ2MnVtaTNnMGNwMTJwIn0.HirDPOdiEpC0myYa1x45RA";
-
-  const tiles =
-    "https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=" +
-    token;
-
   return (
-    <div
-      className={css.Container}
-      data-fullscreen={keyboard}
-      data-update={to ? true : false}
-    >
-      {center && (
-        <MapContainer className={css.Map} keyboardPanDelta={0}>
-          <TileLayer url={tiles} />
+    <div className={`${css.Container} ${className}`}>
+      {mapProps && (
+        <MapContainer {...mapProps} className={css.Map} keyboardPanDelta={0}>
+          <TileLayer url={tilesURL} />
           {children}
-          <Set ref={ref} to={to} keyboard={keyboard} params={params} />
+          <Set ref={ref} mapProps={mapProps} />
         </MapContainer>
       )}
     </div>
@@ -105,28 +89,31 @@ export const Map = React.forwardRef((props, ref) => {
 /* MapContainer props are immutable: changing them after they have been set a first time will have no effect on the Map instance or its container. The Leaflet Map instance created by the MapContainer element can be accessed by child components using one of the provided hooks or the MapConsumer component. The component is use to triger re-render on the map */
 
 const Set = React.forwardRef((props, ref) => {
-  const { to, keyboard, params } = props;
+  const { mapProps } = props;
 
-  let { minCenter, minZoom, maxCenter, maxZoom, defaultBounds } = params;
-
+  /* DEFINE THE REF */
+  //We sent back a `ref` object to parents to give them the ability to update the map
   const map = useMap();
 
   if (ref) {
     ref.current = map;
   }
 
-  // We adjust the bounds of the map. We can use fitBounds for no animation and flyToBounds for animation.
+  /* UPDATE tHE MAP IN PROPS IS UPDATED */
   useEffect(() => {
-    map.fitBounds(defaultBounds, {
-      // I don't undertsand anything about the value of the padding.
-      padding: [24, 48],
-    });
-  }, [defaultBounds, map]);
+    let { bounds, center, zoom } = mapProps;
+    if (bounds) {
+      map.fitBounds(bounds, {
+        // I don't undertsand anything about the value of the padding.
+        padding: [24, 48],
+      });
+    } else if (center) {
+      let c = new L.LatLng(center[0], center[1]);
+      let z = zoom || defaultZoom;
+      map.setView(c, z);
+    }
+  }, [map, mapProps]);
 
   map.invalidateSize();
-
-  //Suppose to disa
-  //map.keyboard.disable();
-
   return null;
 });

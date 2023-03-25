@@ -5,7 +5,7 @@ import { useNavigation } from "../../hooks";
 import { GetPositionButton, Button } from "../../components";
 
 export function Onboarding(props) {
-  const { data, to } = props;
+  const { data, routeTo } = props;
 
   /* ARROW NAVIGATION */
   // Will be used to store the index of the selected result
@@ -31,20 +31,22 @@ export function Onboarding(props) {
       return (
         <Wrapper>
           <p>Where do you want to find taxis?</p>
-          <Button onClick={() => to("Waiting Location")}>Near Me</Button>
-          <Button onClick={() => to("Choose On Map")}>Choose On Map</Button>
+          <Button onClick={() => routeTo("Waiting Location")}>Near Me</Button>
+          <Button onClick={() => routeTo("Choose On Map")}>
+            Choose On Map
+          </Button>
         </Wrapper>
       );
     case "Waiting Location":
       getCurrentPosition(
         (res) => {
-          to({
+          routeTo({
             action: "Got Location",
             coords: normalizeCoords(res.coords, "GPS"),
           });
         },
-        () => to("Handle Denied Location"),
-        () => to("Handle Location Error")
+        () => routeTo("Handle Denied Location"),
+        () => routeTo("Handle Location Error")
       );
 
       return (
@@ -56,7 +58,7 @@ export function Onboarding(props) {
       );
     case "Got Location":
       setTimeout(() => {
-        to("Waiting Results");
+        routeTo("Waiting Results");
       }, 1000);
       return (
         <Wrapper>
@@ -73,16 +75,20 @@ export function Onboarding(props) {
             location, grant access through the settings.
           </p>
           <Button onClick={openSettings}>Settings</Button>
-          <Button onClick={() => to("Choose On Map")}>Choose On Map</Button>
-          <Button onClick={() => to("Waiting Location")}>Retry</Button>
+          <Button onClick={() => routeTo("Choose On Map")}>
+            Choose On Map
+          </Button>
+          <Button onClick={() => routeTo("Waiting Location")}>Retry</Button>
         </Wrapper>
       );
     case "Handle Location Error":
       return (
         <Wrapper>
           <p>We didn't success to retrieve your location.</p>
-          <Button onClick={() => to("Choose On Map")}>Choose On Map</Button>
-          <Button onClick={() => to("Waiting Location")}>Retry</Button>
+          <Button onClick={() => routeTo("Choose On Map")}>
+            Choose On Map
+          </Button>
+          <Button onClick={() => routeTo("Waiting Location")}>Retry</Button>
         </Wrapper>
       );
     default:
