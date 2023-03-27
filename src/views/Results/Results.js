@@ -68,7 +68,9 @@ export function Results({ routeTo, data }) {
 
   const item = ranks && ranks[index];
   const isPhone = item && item.type === "phone";
-  const hasPhone = item && item.phone;
+  const hasPhone = (item && item.phone) || false;
+
+  console.log(hasPhone);
 
   return (
     <div className={css.container}>
