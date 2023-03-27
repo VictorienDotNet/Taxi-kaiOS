@@ -64,8 +64,11 @@ export function Results({ routeTo, data }) {
   /* DISPLAY AND DEFINE VARIANTS */
   //Based on the CurrentView selected, we display different variants. Each variants use different content for the card and different actions for the softkeys
 
+  console.log(ranks);
+
   const item = ranks && ranks[index];
   const isPhone = item && item.type === "phone";
+  const hasPhone = item && item.phone;
 
   return (
     <div className={css.container}>
@@ -107,8 +110,8 @@ export function Results({ routeTo, data }) {
             : //
             currentView === "View Results" && ranks
             ? [
-                isPhone && {
-                  fct: () => routeTo("Call Taxi Services"),
+                hasPhone && {
+                  fct: () => routeTo("Call Taxi Service"),
                   name: "Call",
                 },
                 { fct: () => routeTo("Display On Map"), name: "Map" },

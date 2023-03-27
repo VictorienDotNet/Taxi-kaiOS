@@ -7,9 +7,9 @@ import "./Leaflet.1.7.1.css";
 
 /* DEFINE THE DEFAULT MAP PARAMETERS */
 // The initial Zoom and Center are the position parameter of the first openingl; The defaultZoom is use when there is a single marker on the map and not zoom defined
-let initialCenter = [45.52438983143154, -73.59706878662111]; //Montréal
-let initalZoom = 4;
-let defaultZoom = 12;
+let initialCenter = [-6.81189846638549, 39.281616210937]; //Dar Es Salam
+let initalZoom = 1;
+let defaultZoom = 11;
 let tiles = {
   username: "mapbox",
   id: "streets-v9",
@@ -30,12 +30,12 @@ export const Map = React.forwardRef((props, ref) => {
   useEffect(() => {
     //## Firstly, we select the children concerned by the bounds
     let boundable;
-    if (Array.isArray(children)) {
+    if (children && Array.isArray(children)) {
       let childs = children.filter((child) => {
         return child && child.props && child.props.boundable;
       });
       boundable = childs.length === 1 ? childs[0] : childs;
-    } else if (children.props.boundable) {
+    } else if (children && children.props.boundable) {
       boundable = children;
     }
 

@@ -139,7 +139,15 @@ export default function App() {
   ) {
     return <Call data={data} routeTo={routeTo} hit={hit} />;
   } else {
-    return <div>There is an error.</div>;
+    //There is an error, we start from the beggining.
+    setTimeout(() => {
+      routeTo("Choose Location");
+    }, 4167);
+    return (
+      <div>
+        <p>An error happen. We are restarting the app…</p>
+      </div>
+    );
   }
 }
 
