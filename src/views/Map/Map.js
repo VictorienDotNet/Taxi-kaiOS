@@ -6,6 +6,7 @@ import { normalizeCoords } from "../../tools";
 //export function Map({ center, children, zoom }) {
 export const Map = (props) => {
   const { data, routeTo } = props;
+  const { currentView, coords } = data;
   const i = 25; //map increment for arrow navigation
 
   const map = useRef();
@@ -41,7 +42,11 @@ export const Map = (props) => {
 
       //Events related to app routing
       if (evt.key === "Backspace") {
-        routeTo("Choose Location");
+        if (currentView === "Choose On Map") {
+          routeTo("Choose Location");
+        } else if (currentView === "Display On Map") {
+          routeTo("View Results");
+        }
       }
     };
 
@@ -56,20 +61,16 @@ export const Map = (props) => {
       </div>
 
       <MapTiles ref={map}>
-        {data.coords && (
-          <Marker name="my-position" position={data.coords} boundable />
-        )}
+        {coords && <Marker name="my-position" position={coords} boundable />}
       </MapTiles>
 
-      <div className={css.SoftkeyContainer}>
-        <Softkey>
-          {[
-            { fct: onSoftKeyLeft, name: "Zoom Out" },
-            { fct: onSoftKeyCenter, name: "Select" },
-            { fct: onSoftKeyRight, name: "Zoom In" },
-          ]}
-        </Softkey>
-      </div>
+      <Softkey>
+        {[
+          { fct: onSoftKeyLeft, name: "Zoom Out" },
+          { fct: onSoftKeyCenter, name: "Select" },
+          { fct: onSoftKeyRight, name: "Zoom In" },
+        ]}
+      </Softkey>
     </div>
   );
 }; /**/

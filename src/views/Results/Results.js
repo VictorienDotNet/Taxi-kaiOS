@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
-import { Map, Marker, Card, Item } from "../../components";
+import { Map, Marker, Card, Item, Softkey } from "../../components";
 import { useFetch } from "usehooks-ts";
 import css from "./Results.module.scss";
 
@@ -24,7 +24,7 @@ export function Results({ routeTo, data }) {
   //Thirdly, we update the app once we get on the result
   useEffect(() => {
     if (!res.data) return;
-    /*
+
     if (res.data.results)
       routeTo({
         currentView: "View Results",
@@ -34,7 +34,6 @@ export function Results({ routeTo, data }) {
       routeTo({
         currentView: "View Any Result",
       });
-      */
   }, [res]);
   /**/
 
@@ -62,17 +61,11 @@ export function Results({ routeTo, data }) {
   }, [routeTo]);
   /**/
 
-  /* DEFINE VARIANTS */
-  //Based on the CurrentView selected, we define differient variants. Each variants use different content for the card and different actions for the softkeys
+  /* DISPLAY AND DEFINE VARIANTS */
+  //Based on the CurrentView selected, we display different variants. Each variants use different content for the card and different actions for the softkeys
 
   const item = ranks && ranks[index];
-  const marker = item && item.type !== "phone" && item;
-
-  /*
-    {marker && (
-          <Marker name="rank" position={[marker.lat, marker.lng]} boundable />
-        )}
-        */
+  const isPhone = item && item.type === "phone";
 
   return (
     <div className={css.container}>
@@ -80,8 +73,8 @@ export function Results({ routeTo, data }) {
         {coords && (
           <Marker name="my-position" position={coords} boundable={true} />
         )}
-        {marker && (
-          <Marker name="rank" position={[marker.lat, marker.lng]} boundable />
+        {item && !isPhone && (
+          <Marker name="rank" position={[item.lat, item.lng]} boundable />
         )}
       </Map>
 
@@ -100,6 +93,30 @@ export function Results({ routeTo, data }) {
           null
         }
       </Card>
+
+      <Softkey>
+        {
+          // We display content based on the currentView
+          currentView === "View Any Result"
+            ? [
+                {
+                  fct: () => routeTo("Choose Location"),
+                  name: "Change Location",
+                },
+              ]
+            : //
+            currentView === "View Results" && ranks
+            ? [
+                isPhone && {
+                  fct: () => routeTo("Call Taxi Services"),
+                  name: "Call",
+                },
+                { fct: () => routeTo("Display On Map"), name: "Map" },
+              ]
+            : //
+              null
+        }
+      </Softkey>
     </div>
   );
 }

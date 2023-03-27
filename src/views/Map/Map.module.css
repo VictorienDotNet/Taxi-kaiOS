@@ -10,16 +10,6 @@
   background-position: center;
 }
 
-.SoftkeyContainer {
-  position: absolute;
-  bottom: 2px;
-  left: 2px;
-  right: 2px;
-
-  border-radius: 4px;
-  overflow: hidden;
-}
-
 .Target {
   position: absolute;
   z-index: 1;

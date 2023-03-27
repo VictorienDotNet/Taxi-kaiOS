@@ -1,5 +1,12 @@
 .softkey {
   z-index: 2;
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+
+  border-radius: 4px;
+  overflow: hidden;
 
   display: flex;
   justify-content: space-between;

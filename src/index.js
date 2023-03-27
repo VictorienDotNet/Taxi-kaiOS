@@ -121,7 +121,7 @@ export default function App() {
     return <Onboarding data={data} routeTo={routeTo} />;
   } else if (
     data.currentView === "Choose On Map" ||
-    data.currentView === "Display Map"
+    data.currentView === "Display On Map"
   ) {
     return <Map data={data} routeTo={routeTo} />;
   } else if (
