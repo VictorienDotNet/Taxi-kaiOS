@@ -18,7 +18,6 @@ export const useStorage = () => {
   }
 
   useEffect(() => {
-    console.log(name);
     get(name)
       .then((data) => {
         //Depending on the browser, a successfull request could be an empty object {}. To be sure that's the first openning of the app. We will need to check if the object contain any data. We use the creation date and the version to make the difference between an opening, an update or an installation

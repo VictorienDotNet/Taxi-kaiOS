@@ -6,8 +6,6 @@ export const useFetch = (url) => {
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  console.log("from hook", data);
-
   useEffect(() => {
     setIsLoading(true);
     window

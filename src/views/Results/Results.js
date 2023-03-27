@@ -64,14 +64,12 @@ export function Results({ routeTo, data }) {
   /* DISPLAY AND DEFINE VARIANTS */
   //Based on the CurrentView selected, we display different variants. Each variants use different content for the card and different actions for the softkeys
 
-  console.log(ranks);
-
+  //First, we define boolean value to switch on components and content
   const item = ranks && ranks[index];
   const isPhone = item && item.type === "phone";
   const hasPhone = (item && item.phone) || false;
 
-  console.log(hasPhone);
-
+  //Secondly, we define the JSX
   return (
     <div className={css.container}>
       <Map>

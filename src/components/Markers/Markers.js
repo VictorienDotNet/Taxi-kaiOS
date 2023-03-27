@@ -34,8 +34,6 @@ export function Marker(props) {
     });
   }
 
-  console.log(position);
-
   if (!position || !properties) return;
   return <LeafletMarker position={position} icon={properties} />;
 }

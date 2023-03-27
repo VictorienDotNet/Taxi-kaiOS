@@ -3,7 +3,6 @@
 //- https://stackoverflow.com/questions/10077606/check-if-geolocation-was-allowed-and-get-lat-lon#35628523
 
 export const getCurrentPosition = (success, denied, error) => {
-  navigator.permissions.query({ name: "geolocation" }).then(console.log)
   //We will store the amount of fail into failcount,
   //We will use later to determinate when to give up.
   let failcount = 0;
@@ -33,7 +32,7 @@ export const getCurrentPosition = (success, denied, error) => {
       //We setup a Timeout in case of an unfinishable retrieving
       enableHighAccuracy: true,
       timeout: 2500,
-      maximumAge: 7 * 24 * 60 * 60 * 1000 // 7 days in millisecond
+      maximumAge: 7 * 24 * 60 * 60 * 1000, // 7 days in millisecond
     }
   );
   // Will Stop the Watch once the job is done
@@ -48,12 +47,9 @@ export const getCurrentPosition = (success, denied, error) => {
 export const normalizeCoords = (input, source) => {
   let lat, lng, output;
 
-  //console.log(input);
   //First, we get the properties we are interesd in from the initial object
   lat = input.latitude || input.lat || input[0] || 0;
   lng = input.longitude || input.lng || input[1] || 0;
-
-  //console.log(lat, lng);
 
   //Secondly, we create new array with latitude on index 0 and longitude and index 1
   output = [lat, lng];

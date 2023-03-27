@@ -45,7 +45,6 @@ export const Softkey = ({ children }) => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [children]);
 
-  console.log(children);
   return (
     <div className={css.softkey}>
       {children &&
