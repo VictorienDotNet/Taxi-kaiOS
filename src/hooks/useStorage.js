@@ -83,8 +83,8 @@ export const useStorage = () => {
       id: data.id ? data.id : uuidv4(),
       datasets: {
         //Global resume of the situation
-        currentView: data.datasets.action
-          ? data.datasets.action
+        currentView: data.datasets.currentView
+          ? data.datasets.currentView
           : "Choose Location",
         //Store User's position
         coords: data.datasets.coords ? data.datasets.coords : null,
