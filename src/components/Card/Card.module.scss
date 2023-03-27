@@ -1,22 +1,17 @@
+/* Containers */
 .Card {
   z-index: 1;
-  padding: 8px 12px 0 12px;
-  /*margin-top: -8px;*/
+  padding: 8px 8px 44px 8px;
+
   background-color: #fff;
   border-radius: 8px 8px 0 0;
 }
 
-.Card p {
-  border-radius: 8px;
-  background-color: rgba(199, 199, 199, 0.18);
-}
 .Card p:only-child {
-  margin-top: 8px;
   text-align: center;
   padding: 16px;
-}
-.Card p:empty {
-  display: none;
+  border-radius: 4px;
+  background-color: rgba(199, 199, 199, 0.18);
 }
 
 /* Pagging Systemes */

@@ -19,14 +19,14 @@ export function Onboarding(props) {
   //We don't allow the app to start on an Error and Denied Location screens.
   useMemo(() => {
     if (
-      data.action === "Handle Location Error" ||
-      data.action === "Handle Denied Location"
+      data.currentView === "Handle Location Error" ||
+      data.currentView === "Handle Denied Location"
     ) {
-      data.action = "Choose Location";
+      data.currentView = "Choose Location";
     }
   }, []);
 
-  switch (data.action) {
+  switch (data.currentView) {
     case "Choose Location":
       return (
         <Wrapper>
@@ -41,7 +41,7 @@ export function Onboarding(props) {
       getCurrentPosition(
         (res) => {
           routeTo({
-            action: "Got Location",
+            currentView: "Got Location",
             coords: normalizeCoords(res.coords, "GPS"),
           });
         },

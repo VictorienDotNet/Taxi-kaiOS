@@ -5,7 +5,7 @@ import { Softkey, Icon } from "../../components";
 
 export function Call(props) {
   let { data, routeTo } = props;
-  let { action, ranks, index } = data;
+  let { currentView, ranks, index } = data;
   let phone = data.ranks[data.index].phone;
 
   useNavigation();
@@ -39,7 +39,7 @@ export function Call(props) {
 
   useEffect(() => {}, []);
 
-  switch (action) {
+  switch (currentView) {
     case "Call Taxi Service":
       //Display Call Prompt
       setTimeout(() => {

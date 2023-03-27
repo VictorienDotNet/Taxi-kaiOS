@@ -18,9 +18,9 @@ export default function App() {
   //All analytics is trigger from here except for openning, installation and update which is trigger in the useStorage hook.
   //We look into the previous state of data to not track twice an event and avoid back navigation tracking
   useEffect(() => {
-    let { action, ranks, index, coords } = data;
-    let a = action;
-    let b = previousData && previousData.action;
+    let { currentView, ranks, index, coords } = data;
+    let a = currentView;
+    let b = previousData && previousData.currentView;
     let properties = {};
 
     //avoid double event and back navigation tracking
@@ -61,12 +61,12 @@ export default function App() {
 
   const routeTo = (input) => {
     let output;
-    let { coords, ranks, action } = input;
+    let { coords, ranks, currentView } = input;
 
     //Most of the time, the input it's just a string with the state where to go. However, sometime we receive an object to push into the datatsets
     if (typeof input === "string") {
-      //We have only a string, it's an action (state)
-      output = { action: input };
+      //We have only a string, it's an currentView (state)
+      output = { currentView: input };
     } else {
       //It's object, we push the input into the datasets. However, somes rules apply to avoid bugs and crashs.
 
@@ -77,13 +77,14 @@ export default function App() {
         input.ranks = ranks ? ranks : null;
       }
 
-      //If we don't have "action", we guess it according to the input
-      if (!action && coords) {
+      //If we don't have "currentView", we guess it according to the input
+      if (!currentView && coords) {
         //New coords, we need to wait for the results again.
-        input.action = "Waiting Results";
-      } else if (!action && ranks) {
+        input.currentView = "Waiting Results";
+      } else if (!currentView && ranks) {
         //New results, we need to display it
-        input.action = ranks.length === 0 ? "View Any Result" : "View Results";
+        input.currentView =
+          ranks.length === 0 ? "View Any Result" : "View Results";
       }
 
       //Once we applied the rules, the ouput is ready.
@@ -97,10 +98,10 @@ export default function App() {
   /*** Render ***/
   //What view to render is written in the offline datasets as target. We apply strickly the rules here
 
-  //A path to display Results when we have "Call Taxi Service" stored as action
+  //A path to display Results when we have "Call Taxi Service" stored as currentView
   /*
-	if (data.action === "Call Taxi Service") {
-		data.action = data.ranks.length === 0 ? "View Any Result" : "View Results";
+	if (data.currentView === "Call Taxi Service") {
+		data.currentView = data.ranks.length === 0 ? "View Any Result" : "View Results";
 		hit("Call Taxi Service", {
 			phone: data.ranks[data.index].phone,
 			name: data.ranks[data.index].name
@@ -110,28 +111,31 @@ export default function App() {
   if (!data) {
     return <div></div>;
   } else if (
-    data.action === "Learn Basics" ||
-    data.action === "Choose Location" ||
-    data.action === "Waiting Location" ||
-    data.action === "Got Location" ||
-    data.action === "Handle Denied Location" ||
-    data.action === "Handle Location Error"
+    data.currentView === "Learn Basics" ||
+    data.currentView === "Choose Location" ||
+    data.currentView === "Waiting Location" ||
+    data.currentView === "Got Location" ||
+    data.currentView === "Handle Denied Location" ||
+    data.currentView === "Handle Location Error"
   ) {
     return <Onboarding data={data} routeTo={routeTo} />;
-  } else if (data.action === "Choose On Map" || data.action === "Display Map") {
+  } else if (
+    data.currentView === "Choose On Map" ||
+    data.currentView === "Display Map"
+  ) {
     return <Map data={data} routeTo={routeTo} />;
   } else if (
-    data.action === "Waiting Results" ||
-    data.action === "View Results" ||
-    data.action === "View Any Result" ||
-    data.action === "Display Map"
+    data.currentView === "Waiting Results" ||
+    data.currentView === "View Results" ||
+    data.currentView === "View Any Result" ||
+    data.currentView === "Display Map"
   ) {
     return <Results data={data} routeTo={routeTo} />;
   } else if (
-    data.action === "Call Taxi Service" ||
-    data.action === "Review Taxi Service" ||
-    data.action === "Unsatisfy With Taxi Service" ||
-    data.action === "Satisfy With Taxi Service"
+    data.currentView === "Call Taxi Service" ||
+    data.currentView === "Review Taxi Service" ||
+    data.currentView === "Unsatisfy With Taxi Service" ||
+    data.currentView === "Satisfy With Taxi Service"
   ) {
     return <Call data={data} routeTo={routeTo} hit={hit} />;
   } else {

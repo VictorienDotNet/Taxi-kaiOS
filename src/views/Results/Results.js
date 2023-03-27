@@ -24,6 +24,7 @@ export function Results({ routeTo, data }) {
   //Thirdly, we update the app once we get on the result
   useEffect(() => {
     if (!res.data) return;
+    /*
     if (res.data.results)
       routeTo({
         currentView: "View Results",
@@ -33,6 +34,7 @@ export function Results({ routeTo, data }) {
       routeTo({
         currentView: "View Any Result",
       });
+      */
   }, [res]);
   /**/
 
@@ -90,7 +92,7 @@ export function Results({ routeTo, data }) {
             "Searching available options around…"
           ) : //
           currentView === "View Any Result" ? (
-            "We didn't find any taxi rank around."
+            <p>We didn't find any taxi rank around.</p>
           ) : //
           currentView === "View Results" && ranks ? (
             <Item item={ranks[index]} coords={coords} />

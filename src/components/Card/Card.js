@@ -4,8 +4,13 @@ import { getDistance } from "../../tools/geometry.js";
 import { Icon } from "../";
 
 export const Card = (props) => {
-  const { action, ranks, index, coords } = props.data;
-  const { className, children } = props;
+  const { currentView, ranks, index, coords } = props.data;
+  let { className, children } = props;
+
+  if (typeof children === "string") {
+    children = <p>{children}</p>;
+  }
+
   /*
 	var dots =
 		ranks &&
@@ -22,7 +27,7 @@ export const Card = (props) => {
 		});
 		*/
 
-  return <Wrapper className={className}>{children}</Wrapper>;
+  return <div className={`${css.Card} ${className}`}>{children}</div>;
 };
 
 const Dots = ({ current, max }) => {
