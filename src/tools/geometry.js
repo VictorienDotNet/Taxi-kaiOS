@@ -1,3 +1,17 @@
+/**
+ * FUNCTION RELATED TO KAIOS SYSTEMS
+ * In this files, we store all function related to geometry, coordinates and spatiality. We can :
+ *
+ * 1. Get Distance
+ * 2. Get Bounds
+ * 3. Get Zoom Level
+ * 4. Get Center
+ * 5. Get Current User Position
+ * 6. Normalize Coords
+ *
+ */
+
+/* GET DISTANCE BETWEEN TWO POINTS */
 export function getDistance(lon1, lat1, lon2, lat2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2 - lat1); // deg2rad below
@@ -22,7 +36,7 @@ export function deg2rad(deg) {
   return deg * (Math.PI / 180);
 }
 
-// PATH BOUNDS
+/* GET BOUNDS */
 export function getBounds(points, fct) {
   const NE = { lat: 0, lng: 0 }; // Nord East
   const SW = { lat: 0, lng: 0 }; // South West
@@ -44,7 +58,7 @@ export function getBounds(points, fct) {
   return { NE: NE, SW: SW };
 }
 
-// MAP ZOOM LEVEL
+/* GET ZOOM MAP LEVEL */
 export function getZoomLevel(bounds, sizes) {
   const WORLD_DIM = { height: 256, width: 256 };
   const ZOOM_MAX = 21;
@@ -73,10 +87,76 @@ export function getZoomLevel(bounds, sizes) {
   return Math.min(latZoom, lngZoom, ZOOM_MAX);
 }
 
-// MAP CENTER
+/* GET CENTER FROM A BOUNDS */
 export function getCenter(bounds) {
   return [
     (bounds.NE.lat + bounds.SW.lat) / 2,
     (bounds.NE.lng + bounds.SW.lng) / 2,
   ];
 }
+
+/* GET THE CURRENT USER POSITION */
+//documentation: https://stackoverflow.com/questions/10077606/check-if-geolocation-was-allowed-and-get-lat-lon#35628523
+
+export const getCurrentPosition = (success, denied, error) => {
+  //We will store the amount of fail into failcount,
+  //We will use later to determinate when to give up.
+  let failcount = 0;
+  const IDWatch = navigator.geolocation.watchPosition(
+    function (position) {
+      // IF IT'S A SUCCESS
+      //We callback the function related to success
+      success(position);
+      //We Stop to watch the position
+      stop();
+    },
+    function (err) {
+      // IF IT'S A FAIL
+      //We don't give up after only one fail,
+      //We continue until couple of fails or if the user denied
+      failcount++;
+
+      if (err.code === err.PERMISSION_DENIED) {
+        stop();
+        denied(err);
+      } else if (failcount > 6) {
+        stop();
+        error(err);
+      }
+    },
+    {
+      //We setup a Timeout in case of an unfinishable retrieving
+      enableHighAccuracy: true,
+      timeout: 2500,
+      maximumAge: 7 * 24 * 60 * 60 * 1000, // 7 days in millisecond
+    }
+  );
+  // Will Stop the Watch once the job is done
+  const stop = () => {
+    navigator.geolocation.clearWatch(IDWatch);
+  };
+};
+
+/* NORMALIZATION OF COORDS */
+// The Coords object is structured differentiel accross services. Leaflet use an array, Google Maps prefer a latitude and longitude as properties. This function format an initial coords into an object usable in every services.
+
+export const normalizeCoords = (input, source) => {
+  let lat, lng, output;
+
+  //First, we get the properties we are interesd in from the initial object
+  lat = input.latitude || input.lat || input[0] || 0;
+  lng = input.longitude || input.lng || input[1] || 0;
+
+  //Secondly, we create new array with latitude on index 0 and longitude and index 1
+  output = [lat, lng];
+
+  //Thirdly, we set back the properties
+  output.latitude = lat;
+  output.lat = lat;
+  output.longitude = lng;
+  output.lng = lng;
+  output.source = source;
+
+  //We return the final object
+  return output;
+};
