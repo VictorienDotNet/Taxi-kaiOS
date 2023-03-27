@@ -28,42 +28,47 @@ export const Map = React.forwardRef((props, ref) => {
   /* CALCULATE THE MAP BOUNDS BASED ON MARKERS */
   //We calculate the map bound based on the markers recieve as children. We take in consideration only children with a `boundable` prop.
   useEffect(() => {
-    // If we have multiple children
+    //## Firstly, we select the children concerned by the bounds
+    let boundable;
     if (Array.isArray(children)) {
-      let boundpoints, bounds;
-
-      // Select childrens which we will put in the inital bounds
-      const boundable = children.filter((child) => {
+      let childs = children.filter((child) => {
         return child && child.props && child.props.boundable;
       });
+      boundable = childs.length === 1 ? childs[0] : childs;
+    } else if (children.props.boundable) {
+      boundable = children;
+    }
 
-      if (boundable) {
-        // Select points at the border of the bounds
-        //TODO: getBounds could directly setup the bounds with the same parameters name than Leaflet Bounds parameter. Maybe it will avoid to use L.latLngBounds function.
-        boundpoints = getBounds(boundable, (child) => {
-          return child && child.props && child.props.position;
-        });
+    //## Secondly, if there is multiple children we define a bounds, otherwise we center the map on the unique children. At the end, if there is not children, we center on the default values.
+    if (Array.isArray(boundable)) {
+      //### The case with multiple children:
+      let boundpoints, bounds;
 
-        //Convert into Leaflet object
-        bounds = L.latLngBounds(
-          L.latLng(boundpoints.NE.lat, boundpoints.NE.lng),
-          L.latLng(boundpoints.SW.lat, boundpoints.SW.lng)
-        );
-      }
+      // We select points at the border of the bounds
+      //TODO: getBounds could directly setup the bounds with the same parameters name than Leaflet Bounds parameter. Maybe it will avoid to use L.latLngBounds function.
+      boundpoints = getBounds(boundable, (child) => {
+        return child && child.props && child.props.position;
+      });
 
-      //update the bounds
+      //We convert points into a Leaflet object
+      bounds = L.latLngBounds(
+        L.latLng(boundpoints.NE.lat, boundpoints.NE.lng),
+        L.latLng(boundpoints.SW.lat, boundpoints.SW.lng)
+      );
+
+      //We update the map with the bounds
       setMapProps({
         bounds: bounds,
       });
-      // If we have only one  children
-    } else if (children && children.props.boundable) {
-      //We center the map on the only marker
+    } else if (boundable) {
+      //### The case with one children:
+      //We center the map on the only marker with the default zoom
       setMapProps({
-        center: children.props.position,
+        center: boundable.props.position,
         zoom: defaultZoom,
       });
-      //If we have any children, we use the inital bounds
     } else {
+      //### The case without children:
       setMapProps({
         center: initialCenter,
         zoom: initalZoom,
@@ -76,8 +81,8 @@ export const Map = React.forwardRef((props, ref) => {
       {mapProps && (
         <MapContainer {...mapProps} className={css.Map} keyboardPanDelta={0}>
           <TileLayer url={tilesURL} />
-          {children}
           <Set ref={ref} mapProps={mapProps} />
+          {children}
         </MapContainer>
       )}
     </div>

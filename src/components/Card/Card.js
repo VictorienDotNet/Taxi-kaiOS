@@ -22,8 +22,6 @@ export const Card = (props) => {
 		});
 		*/
 
-  console.log(children);
-
   return <Wrapper className={className}>{children}</Wrapper>;
 };
 

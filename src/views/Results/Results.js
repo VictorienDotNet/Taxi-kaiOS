@@ -23,12 +23,13 @@ export function Results({ routeTo, data }) {
 
   //Thirdly, we update the app once we get on the result
   useEffect(() => {
-    if (res.data && res.data.results)
+    if (!res.data) return;
+    if (res.data.results)
       routeTo({
         currentView: "View Results",
         ranks: res.data.results,
       });
-    else if (res.data && !res.data.results)
+    else if (!res.data.results)
       routeTo({
         currentView: "View Any Result",
       });
@@ -62,22 +63,40 @@ export function Results({ routeTo, data }) {
   /* DEFINE VARIANTS */
   //Based on the CurrentView selected, we define differient variants. Each variants use different content for the card and different actions for the softkeys
 
+  const item = ranks && ranks[index];
+  const marker = item && item.type !== "phone" && item;
+
+  /*
+    {marker && (
+          <Marker name="rank" position={[marker.lat, marker.lng]} boundable />
+        )}
+        */
+
   return (
     <div className={css.container}>
       <Map>
-        <Marker name="my-position" position={coords} boundable />
+        {coords && (
+          <Marker name="my-position" position={coords} boundable={true} />
+        )}
+        {marker && (
+          <Marker name="rank" position={[marker.lat, marker.lng]} boundable />
+        )}
       </Map>
 
       <Card className={css.card} data={data} routeTo={routeTo}>
-        {currentView === "Waiting Results" &&
-          "Searching available options around…"}
-
-        {currentView === "View Any Result" &&
-          "We didn't find any taxi rank around."}
-
-        {currentView === "View Results" && (
-          <Item item={ranks[index]} coords={coords} />
-        )}
+        {
+          // We display content based on the currentView
+          currentView === "Waiting Results" ? (
+            "Searching available options around…"
+          ) : //
+          currentView === "View Any Result" ? (
+            "We didn't find any taxi rank around."
+          ) : //
+          currentView === "View Results" && ranks ? (
+            <Item item={ranks[index]} coords={coords} />
+          ) : //
+          null
+        }
       </Card>
     </div>
   );

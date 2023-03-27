@@ -3,6 +3,7 @@ import L from "leaflet";
 import { Marker as LeafletMarker } from "react-leaflet";
 import css from "./Markers.module.css";
 import rank from "./marker-rank.svg";
+import { normalizeCoords } from "../../tools";
 
 /* MARKERS */
 /* We use a set of compoments to setup specificities for our two markers: Our Current Position and the Taxi ranks */
@@ -33,6 +34,8 @@ export function Marker(props) {
     });
   }
 
-  if (!position || !properties) return false;
+  console.log(position);
+
+  if (!position || !properties) return;
   return <LeafletMarker position={position} icon={properties} />;
 }
