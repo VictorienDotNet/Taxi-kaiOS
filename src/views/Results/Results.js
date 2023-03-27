@@ -1,44 +1,66 @@
 import React from "react";
 import { useEffect } from "react";
-import { Map, Marker, Card } from "../../components";
-import { useNavigation } from "../../hooks";
-
+import { Map, Marker, Card, Item } from "../../components";
+import { useFetch } from "usehooks-ts";
 import css from "./Results.module.scss";
 
-export function Results({ data, routeTo }) {
-  let { coords, currentView } = data;
+export function Results({ routeTo, data }) {
+  let { coords, currentView, ranks, index } = data;
 
-  useNavigation();
+  /* FETCH RESULTS FROM THE API */
+  //We use `useFetch.ts` hook to get data from a specific endpoint
 
-  /* LISTENER FOR KEY EVENT */
+  //First, we define the URL paramertes
+  const endpoint = process.env.REACT_APP_API_ENDPOINT;
+  const version = process.env.REACT_APP_V;
+  const lat = coords[0];
+  const lng = coords[1];
+
+  //Secondly, we feetch the data from API
+  let res = useFetch(
+    `https://${endpoint}/?version=${version}&lat=${lat}&lng=${lng}`
+  );
+
+  //Thirdly, we update the app once we get on the result
+  useEffect(() => {
+    if (res.data && res.data.results)
+      routeTo({
+        currentView: "View Results",
+        ranks: res.data.results,
+      });
+    else if (res.data && !res.data.results)
+      routeTo({
+        currentView: "View Any Result",
+      });
+  }, [res]);
+  /**/
+
+  /* DEFINE THE BACK EVENT */
+  //If the user press return, ze will be back to the Onboarding
 
   useEffect(() => {
     const onKeyDown = (evt) => {
       if (evt.key === "Backspace") {
         routeTo("Choose Location");
-
         evt.preventDefault();
+      } else if (evt.key === "ArrowLeft") {
+        let i = index - 1 < 0 ? 0 : index - 1;
+        routeTo({ index: i });
+      } else if (evt.key === "ArrowRight") {
+        let max = ranks.length - 1;
+        let i = index + 1 > max ? max : index + 1;
+        routeTo({ index: i });
       }
     };
 
     document.addEventListener("keydown", onKeyDown);
 
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [data, routeTo]);
+  }, [routeTo]);
   /**/
 
-  /* DEFINE SOFKEYS EVENT */
-  // We define actions depending on the currentView
-  const onSoftKeyCenter = () => {
-    routeTo("Choose Location");
-  };
-  /**/
-
-  /* FETCH THE RESULT FROM TRANSIT API */
-  //To fake the navigation, I use a timeout which setup the result
-  useEffect(() => {
-    //feetch hooks here
-  }, [coords, routeTo]);
+  /* DEFINE VARIANTS */
+  //Based on the CurrentView selected, we define differient variants. Each variants use different content for the card and different actions for the softkeys
 
   return (
     <div className={css.container}>
@@ -46,10 +68,17 @@ export function Results({ data, routeTo }) {
         <Marker name="my-position" position={coords} boundable />
       </Map>
 
-      <Card className={css.card} data={data} />
+      <Card className={css.card} data={data} routeTo={routeTo}>
+        {currentView === "Waiting Results" &&
+          "Searching available options around…"}
 
-      {/* Below the bloc for loading state */}
-      {currentView === "Waiting Results" && <></>}
+        {currentView === "View Any Result" &&
+          "We didn't find any taxi rank around."}
+
+        {currentView === "View Results" && (
+          <Item item={ranks[index]} coords={coords} />
+        )}
+      </Card>
     </div>
   );
 }

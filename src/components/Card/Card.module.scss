@@ -10,59 +10,13 @@
   border-radius: 8px;
   background-color: rgba(199, 199, 199, 0.18);
 }
-.Card p:empty {
-  display: none;
-}
-
-/* Text Systems */
-.Card h2 {
-  font-weight: normal;
-}
-
 .Card p:only-child {
   margin-top: 8px;
   text-align: center;
   padding: 16px;
 }
-
-.subheader {
-  font-size: 0.75em;
-  line-height: 1em;
-  vertical-align: middle;
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.rank,
-.phone {
-  position: relative;
-  /*I didn't success to align the subheader. I adujusted the padding optically to make vertical aligned*/
-  padding: 10px 16px 12px 44px;
-  line-height: 1em;
-
-  border-radius: 4px;
-
-  & svg {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 12px;
-
-    width: 24px;
-    height: 24px;
-
-    content: "";
-    border-radius: 4px;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-}
-
-.rank {
-  background-color: rgba(255, 191, 0, 0.16);
-}
-
-.phone {
-  background-color: rgba(0, 194, 74, 0.1);
+.Card p:empty {
+  display: none;
 }
 
 /* Pagging Systemes */

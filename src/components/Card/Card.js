@@ -5,7 +5,7 @@ import { Icon } from "../";
 
 export const Card = (props) => {
   const { action, ranks, index, coords } = props.data;
-  const { className } = props;
+  const { className, children } = props;
   /*
 	var dots =
 		ranks &&
@@ -22,53 +22,9 @@ export const Card = (props) => {
 		});
 		*/
 
-  switch (action) {
-    case "Waiting Results":
-      return (
-        <Wrapper className={className}>
-          <p>Searching available options around…</p>
-        </Wrapper>
-      );
-    case "View Any Result":
-      return (
-        <Wrapper className={className}>
-          <p>We didn't find any taxi rank around.</p>
-        </Wrapper>
-      );
-    case "View Results":
-      let item = ranks[index];
+  console.log(children);
 
-      if (item.type === "phone") {
-        return (
-          <Wrapper className={className}>
-            <Dots current={index} max={ranks.length} />
-            <Phone>
-              <span className={css.subheader}>{item.vicinity}</span>
-              <h2>{item.name}</h2>
-            </Phone>
-          </Wrapper>
-        );
-      } else {
-        let dist = getDistance(coords[1], coords[0], item.lng, item.lat);
-
-        return (
-          <Wrapper className={className}>
-            <Dots current={index} max={ranks.length} />
-            <Rank>
-              <span className={css.subheader}>{dist}</span>
-              <h2>{item.name}</h2>
-            </Rank>
-          </Wrapper>
-        );
-      }
-
-    default:
-      return (
-        <Wrapper className={className}>
-          <p>Looks like there was a problem. Restart the app.</p>
-        </Wrapper>
-      );
-  }
+  return <Wrapper className={className}>{children}</Wrapper>;
 };
 
 const Dots = ({ current, max }) => {
