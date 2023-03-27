@@ -81,21 +81,23 @@ export function Results({ routeTo, data }) {
         )}
       </Map>
 
-      <Card className={css.card} data={data} routeTo={routeTo}>
-        {
-          // We display content based on the currentView
-          currentView === "Waiting Results" ? (
-            "Searching available options around…"
-          ) : //
-          currentView === "View Any Result" ? (
-            <p>We didn't find any taxi rank around.</p>
-          ) : //
-          currentView === "View Results" && ranks ? (
-            <Item item={ranks[index]} coords={coords} />
-          ) : //
-          null
-        }
-      </Card>
+      {
+        <Card className={css.card} data={data} routeTo={routeTo}>
+          {
+            // We display content based on the currentView
+            currentView === "Waiting Results" ? (
+              "Searching available options around…"
+            ) : //
+            currentView === "View Any Result" ? (
+              <p>We didn't find any taxi rank around.</p>
+            ) : //
+            currentView === "View Results" && ranks ? (
+              <Item item={ranks[index]} coords={coords} />
+            ) : //
+            null
+          }
+        </Card>
+      }
 
       <Softkey>
         {
@@ -108,7 +110,7 @@ export function Results({ routeTo, data }) {
                 },
               ]
             : //
-            currentView === "View Results" && ranks
+            currentView === "View Results" && item
             ? [
                 hasPhone && {
                   fct: () => routeTo("Call Taxi Service"),

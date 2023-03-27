@@ -6,7 +6,7 @@ import { normalizeCoords } from "../../tools";
 //export function Map({ center, children, zoom }) {
 export const Map = (props) => {
   const { data, routeTo } = props;
-  const { currentView, coords } = data;
+  const { currentView, coords, ranks, index } = data;
   const i = 25; //map increment for arrow navigation
 
   const map = useRef();
@@ -62,6 +62,13 @@ export const Map = (props) => {
 
       <MapTiles ref={map}>
         {coords && <Marker name="my-position" position={coords} boundable />}
+        {currentView === "Display On Map" && (
+          <Marker
+            name="rank"
+            position={[ranks[index].lat, ranks[index].lng]}
+            boundable
+          />
+        )}
       </MapTiles>
 
       <Softkey>

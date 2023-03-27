@@ -127,8 +127,7 @@ export default function App() {
   } else if (
     data.currentView === "Waiting Results" ||
     data.currentView === "View Results" ||
-    data.currentView === "View Any Result" ||
-    data.currentView === "Display Map"
+    data.currentView === "View Any Result"
   ) {
     return <Results data={data} routeTo={routeTo} />;
   } else if (
