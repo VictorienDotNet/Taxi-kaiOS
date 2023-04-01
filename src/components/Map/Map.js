@@ -43,7 +43,6 @@ export const Map = React.forwardRef((props, ref) => {
     if (Array.isArray(boundable)) {
       //### The case with multiple children:
       let boundpoints, bounds;
-
       // We select points at the border of the bounds
       //TODO: getBounds could directly setup the bounds with the same parameters name than Leaflet Bounds parameter. Maybe it will avoid to use L.latLngBounds function.
       boundpoints = getBounds(boundable, (child) => {
@@ -79,7 +78,7 @@ export const Map = React.forwardRef((props, ref) => {
   return (
     <div className={`${css.Container} ${className}`}>
       {mapProps && (
-        <MapContainer {...mapProps} className={css.Map} keyboardPanDelta={0}>
+        <MapContainer className={css.Map} keyboardPanDelta={0}>
           <TileLayer url={tilesURL} />
           <Set ref={ref} mapProps={mapProps} />
           {children}
