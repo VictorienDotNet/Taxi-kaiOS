@@ -44,10 +44,23 @@ export const Map = (props) => {
       if (evt.key === "Backspace") {
         if (currentView === "Choose On Map") {
           routeTo("Choose Location");
+          evt.preventDefault();
         } else if (currentView === "Display On Map") {
           routeTo("View Results");
         }
       }
+
+      //Prevent default action to happem
+      if (
+        [
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          "Backspace",
+        ].includes(evt.key)
+      )
+        evt.preventDefault();
     };
 
     document.addEventListener("keydown", onKeyDown);

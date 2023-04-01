@@ -48,11 +48,17 @@ export function Results({ routeTo, data }) {
       } else if (evt.key === "ArrowLeft") {
         let i = index - 1 < 0 ? 0 : index - 1;
         routeTo({ index: i });
+        evt.preventDefault();
       } else if (evt.key === "ArrowRight") {
         let max = ranks.length - 1;
         let i = index + 1 > max ? max : index + 1;
         routeTo({ index: i });
+        evt.preventDefault();
       }
+
+      //Prevent default action to happen
+      if (["ArrowLeft", "ArrowRight", "Backspace"].includes(evt.key))
+        evt.preventDefault();
     };
 
     document.addEventListener("keydown", onKeyDown);
