@@ -20,20 +20,22 @@ export function Results({ routeTo, data }) {
   let res = useFetch(
     `https://${endpoint}/?version=${version}&lat=${lat}&lng=${lng}`
   );
+  console.log(res);
 
   //Thirdly, we update the app once we get the result
   useEffect(() => {
     if (!res.data) return;
 
-    if (res.data.results.length !== 0)
+    if (res.data.results && res.data.results.length !== 0) {
       routeTo({
         currentView: "View Results",
         ranks: res.data.results,
       });
-    else
+    } else {
       routeTo({
         currentView: "View Any Result",
       });
+    }
   }, [res]);
   /**/
 
