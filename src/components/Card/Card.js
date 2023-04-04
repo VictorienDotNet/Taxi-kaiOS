@@ -1,33 +1,32 @@
 import React from "react";
 import css from "./Card.module.scss";
-import { getDistance } from "../../tools/geometry.js";
-import { Icon } from "../";
 
 export const Card = (props) => {
   const { currentView, ranks, index, coords } = props.data;
-  let { className, children } = props;
+  const { className, children } = props;
 
+  let selectedChildren;
   if (typeof children === "string") {
-    children = <p>{children}</p>;
+    selectedChildren = <p>{children}</p>;
+  } else if (Array.isArray(children)) {
+    selectedChildren = children[index];
+  } else {
+    selectedChildren = children;
   }
 
-  /*
-	var dots =
-		ranks &&
-		index &&
-		ranks.map((e, i) => {
-			return (
-				<div
-					key={i}
-					nav-index={i}
-					nav-selectable="true"
-					nav-selected={i === index ? "true" : "false"}
-				/>
-			);
-		});
-		*/
+  /* DISPLAY AND DEFINE VARIANTS */
+  //Based on the childrne, we display the dots
 
-  return <div className={`${css.Card} ${className}`}>{children}</div>;
+  //First, we define boolean value to switch on-off components and content
+  const hasChildrens = Array.isArray(children);
+
+  //Secondly, we define the JSX
+  return (
+    <div className={`${css.Card} ${className}`}>
+      {hasChildrens && <Dots current={index} max={children.length}></Dots>}
+      {selectedChildren}
+    </div>
+  );
 };
 
 const Dots = ({ current, max }) => {
@@ -44,26 +43,4 @@ const Dots = ({ current, max }) => {
   }
 
   return <div className={css.pagging}>{dots}</div>;
-};
-
-const Rank = ({ children }) => {
-  return (
-    <div className={css.rank}>
-      <Icon name="rank" />
-      {children}
-    </div>
-  );
-};
-
-const Phone = ({ children }) => {
-  return (
-    <div className={css.phone}>
-      <Icon name="phone" />
-      {children}
-    </div>
-  );
-};
-
-const Wrapper = ({ children, className }) => {
-  return <div className={`${css.Card} ${className}`}>{children}</div>;
 };

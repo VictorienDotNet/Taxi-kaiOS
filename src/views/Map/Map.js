@@ -67,6 +67,15 @@ export const Map = (props) => {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [routeTo]);
 
+  /* DISPLAY AND DEFINE VARIANTS */
+  //Based on the CurrentView selected and the selected stand, we display it on the map or not
+
+  //First, we define boolean value to switch on-off components and content
+  const item = ranks && ranks[index];
+  const isPhone = item && item.type === "phone";
+  const displayMarker = currentView === "Display On Map" && !isPhone;
+
+  //Secondly, we define the JSX
   return (
     <div className={css.Container}>
       <div className={css.Target}>
@@ -75,7 +84,7 @@ export const Map = (props) => {
 
       <MapTiles ref={map}>
         {coords && <Marker name="my-position" position={coords} boundable />}
-        {currentView === "Display On Map" && (
+        {displayMarker && (
           <Marker
             name="rank"
             position={[ranks[index].lat, ranks[index].lng]}

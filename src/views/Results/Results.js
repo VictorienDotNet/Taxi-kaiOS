@@ -21,42 +21,42 @@ export function Results({ routeTo, data }) {
     `https://${endpoint}/?version=${version}&lat=${lat}&lng=${lng}`
   );
 
-  //Thirdly, we update the app once we get on the result
+  //Thirdly, we update the app once we get the result
   useEffect(() => {
     if (!res.data) return;
 
-    if (res.data.results)
+    if (res.data.results.length !== 0)
       routeTo({
         currentView: "View Results",
         ranks: res.data.results,
       });
-    else if (!res.data.results)
+    else
       routeTo({
         currentView: "View Any Result",
       });
   }, [res]);
   /**/
 
-  /* DEFINE THE BACK EVENT */
-  //If the user press return, ze will be back to the Onboarding
+  /* DEFINE THE KEYBOARDS EVENT */
+  //We define below the back navigation and the navigation bewteen stands
 
   useEffect(() => {
     const onKeyDown = (evt) => {
       if (evt.key === "Backspace") {
+        //If the user press return, ze will be back to the Onboarding
         routeTo("Choose Location");
-        evt.preventDefault();
       } else if (evt.key === "ArrowLeft") {
+        //If the user press the Left Arrow, we display the previous item
         let i = index - 1 < 0 ? 0 : index - 1;
         routeTo({ index: i });
-        evt.preventDefault();
       } else if (evt.key === "ArrowRight") {
+        //If the user press the Left Arrow, we display the next item
         let max = ranks.length - 1;
         let i = index + 1 > max ? max : index + 1;
         routeTo({ index: i });
-        evt.preventDefault();
       }
 
-      //Prevent default action to happen
+      //We prevent default action to happen
       if (["ArrowLeft", "ArrowRight", "Backspace"].includes(evt.key))
         evt.preventDefault();
     };
@@ -70,7 +70,7 @@ export function Results({ routeTo, data }) {
   /* DISPLAY AND DEFINE VARIANTS */
   //Based on the CurrentView selected, we display different variants. Each variants use different content for the card and different actions for the softkeys
 
-  //First, we define boolean value to switch on components and content
+  //First, we define boolean value to switch on-off components and content
   const item = ranks && ranks[index];
   const isPhone = item && item.type === "phone";
   const hasPhone = (item && item.phone) || false;
@@ -98,7 +98,7 @@ export function Results({ routeTo, data }) {
               <p>We didn't find any taxi rank around.</p>
             ) : //
             currentView === "View Results" && ranks ? (
-              <Item item={ranks[index]} coords={coords} />
+              ranks.map((e) => <Item item={e} coords={coords} />)
             ) : //
             null
           }
