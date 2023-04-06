@@ -9,7 +9,9 @@
   overflow: hidden;
 
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
   padding: 8px;
 
   background-color: #fff;
@@ -20,10 +22,13 @@
   color: #005ae0;
 }
 
-.softkey > *:only-child {
-  width: 100%;
+.softkey > *:only-child,
+.softkey > *:nth-child(2):nth-last-child(2) {
+  margin-left: auto;
+  margin-right: auto;
   font-weight: 700;
   text-align: center;
+  align-self: center;
 }
 
 /* Seftkeys from map 
