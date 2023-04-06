@@ -1,7 +1,8 @@
 import React from "react";
 import { useEffect } from "react";
 import { Map, Marker, Card, Item, Softkey } from "../../components";
-import { useFetch } from "usehooks-ts";
+//import { useFetch } from "usehooks-ts";
+import { useFetch } from "../../hooks";
 import css from "./Results.module.scss";
 
 export function Results({ routeTo, data }) {
@@ -17,26 +18,25 @@ export function Results({ routeTo, data }) {
   const lng = coords[1];
 
   //Secondly, we feetch the data from API
-  let res = useFetch(
+  let [result] = useFetch(
     `https://${endpoint}/?version=${version}&lat=${lat}&lng=${lng}`
   );
-  console.log(res);
 
   //Thirdly, we update the app once we get the result
   useEffect(() => {
-    if (!res.data) return;
-
-    if (res.data.results && res.data.results.length !== 0) {
+    //TODO: Add Error state
+    //TODO: Update server
+    if (result && result.length > 0) {
       routeTo({
         currentView: "View Results",
-        ranks: res.data.results,
+        ranks: result,
       });
-    } else {
+    } else if (result && result.length === 0) {
       routeTo({
         currentView: "View Any Result",
       });
     }
-  }, [res]);
+  }, [result]);
   /**/
 
   /* DEFINE THE KEYBOARDS EVENT */
@@ -100,7 +100,7 @@ export function Results({ routeTo, data }) {
               <p>We didn't find any taxi rank around.</p>
             ) : //
             currentView === "View Results" && ranks ? (
-              ranks.map((e) => <Item item={e} coords={coords} />)
+              ranks.map((e, i) => <Item key={i} item={e} coords={coords} />)
             ) : //
             null
           }
