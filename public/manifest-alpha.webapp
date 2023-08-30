@@ -6,17 +6,17 @@
   "description": "Find the closest taxi ranks. Get local taxi numbers.",
   "subtitle": "Find the closest taxi",
   "theme": "#000000",
-  "launch_path": "/alpha/index.html",
-  "origin": "app://app.kaios.taxi/",
+  "launch_path": "/index.html",
+  "origin": "app://alpha.kaitaxi.app/",
   "developer": {
     "name": "Taxi",
-    "url": "https://kaios.taxi"
+    "url": "https://kaitaxi.app"
   },
   "icons": {
-    "56": "/icon/alpha/app@56w.png",
-    "84": "/icon/alpha/app@84w.png",
-    "112": "/icon/alpha/app@112w.png",
-    "128": "/icon/alpha/app@128w.png"
+    "56": "/icon/app@56w.png",
+    "84": "/icon/app@84w.png",
+    "112": "/icon/app@112w.png",
+    "128": "/icon/app@128w.png"
   },
   "locales": {
     "en-GB": {

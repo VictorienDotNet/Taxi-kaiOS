@@ -7,16 +7,16 @@
   "subtitle": "Find the closest taxi",
   "theme": "#000000",
   "launch_path": "/index.html",
-  "origin": "app://app.kaios.taxi/",
+  "origin": "app://production.kaitaxi.app/",
   "developer": {
     "name": "Taxi",
-    "url": "https://kaios.taxi"
+    "url": "https://kaitaxi.app"
   },
   "icons": {
-    "56": "/icon/production/app@56w.png",
-    "84": "/icon/production/app@84w.png",
-    "112": "/icon/production/app@112w.png",
-    "128": "/icon/production/app@128w.png"
+    "56": "/icon/app@56w.png",
+    "84": "/icon/app@84w.png",
+    "112": "/icon/app@112w.png",
+    "128": "/icon/app@128w.png"
   },
   "locales": {
     "en-GB": {
