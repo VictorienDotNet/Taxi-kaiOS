@@ -1,98 +1,46 @@
 import React from "react";
-import css from "./Card.module.css";
-import { getDistance } from "../../tools/geometry.js";
+import css from "./Card.module.scss";
 
-export const Card = ({ data }) => {
-	const { action, ranks, index, coords } = data;
-	/*
-	var dots =
-		ranks &&
-		index &&
-		ranks.map((e, i) => {
-			return (
-				<div
-					key={i}
-					nav-index={i}
-					nav-selectable="true"
-					nav-selected={i === index ? "true" : "false"}
-				/>
-			);
-		});
-		*/
+export const Card = (props) => {
+  const { currentView, ranks, index, coords } = props.data;
+  const { className, children } = props;
 
-	switch (action) {
-		case "Waiting Results":
-			return (
-				<Wrapper>
-					<p>Searching available options around…</p>
-				</Wrapper>
-			);
-		case "View Any Result":
-			return (
-				<Wrapper>
-					<p>We didn't find any taxi rank around.</p>
-				</Wrapper>
-			);
-		case "View Results":
-			let item = ranks[index];
+  let selectedChildren;
+  if (typeof children === "string") {
+    selectedChildren = <p>{children}</p>;
+  } else if (Array.isArray(children)) {
+    selectedChildren = children[index];
+  } else {
+    selectedChildren = children;
+  }
 
-			if (item.type === "phone") {
-				return (
-					<Wrapper>
-						<Dots current={index} max={ranks.length} />
-						<Phone>
-							<span className={css.subheader}>{item.vicinity}</span>
-							<h2>{item.name}</h2>
-						</Phone>
-					</Wrapper>
-				);
-			} else {
-				let dist = getDistance(coords[1], coords[0], item.lng, item.lat);
+  /* DISPLAY AND DEFINE VARIANTS */
+  //Based on the childrne, we display the dots
 
-				return (
-					<Wrapper>
-						<Dots current={index} max={ranks.length} />
-						<Rank>
-							<span className={css.subheader}>{dist}</span>
-							<h2>{item.name}</h2>
-						</Rank>
-					</Wrapper>
-				);
-			}
+  //First, we define boolean value to switch on-off components and content
+  const hasChildrens = Array.isArray(children);
 
-		default:
-			return (
-				<Wrapper>
-					<p>Looks like there was a problem. Restart the app.</p>
-				</Wrapper>
-			);
-	}
+  //Secondly, we define the JSX
+  return (
+    <div className={`${css.Card} ${className}`}>
+      {hasChildrens && <Dots current={index} max={children.length}></Dots>}
+      {selectedChildren}
+    </div>
+  );
 };
 
 const Dots = ({ current, max }) => {
-	let dots = [];
-	for (var i = 0; i < max; i++) {
-		dots.push(
-			<div
-				key={i}
-				nav-index={i}
-				nav-selectable="true"
-				nav-selected={i === current ? "true" : "false"}
-			/>
-		);
-	}
+  let dots = [];
+  for (var i = 0; i < max; i++) {
+    dots.push(
+      <div
+        key={i}
+        nav-index={i}
+        nav-selectable="true"
+        nav-selected={i === current ? "true" : "false"}
+      />
+    );
+  }
 
-	return <div className={css.pagging}>{dots}</div>;
-};
-
-const Rank = ({ children }) => {
-	return <div className={css.rank}>{children}</div>;
-};
-
-const Phone = ({ children }) => {
-	return <div className={css.service}>{children}</div>;
-};
-
-const Wrapper = ({ children }) => {
-	return <div className={css.Card}>{children}</div>;
+  return <div className={css.pagging}>{dots}</div>;
 };
