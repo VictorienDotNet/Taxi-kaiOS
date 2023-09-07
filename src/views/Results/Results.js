@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
-import { Map, Marker, Card, Item, Softkey } from "../../components";
+import { Map, Marker, Card, Item, Softkey, AdsButton } from "../../components";
 //import { useFetch } from "usehooks-ts";
 import { useFetch } from "../../hooks";
 import css from "./Results.module.scss";
@@ -80,6 +80,7 @@ export function Results({ routeTo, data }) {
   //Secondly, we define the JSX
   return (
     <div className={css.container}>
+      <AdsButton />
       <Map>
         {coords && (
           <Marker name="my-position" position={coords} boundable={true} />

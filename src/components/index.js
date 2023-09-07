@@ -6,3 +6,4 @@ export * from "./Button/Button";
 export * from "./GetPositionButton/GetPositionButton";
 export * from "./Icon/Icon";
 export * from "./Item/Item";
+export * from "./AdsButton";
