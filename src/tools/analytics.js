@@ -1,4 +1,4 @@
-import amplitude from "amplitude-js";
+import * as amplitude from "@amplitude/analytics-browser";
 const version = process.env.REACT_APP_V;
 
 export const hit = (name, properties, id) => {
@@ -11,12 +11,12 @@ export const hit = (name, properties, id) => {
     });
   } else {
     if (id) {
-      amplitude.getInstance().init(process.env.REACT_APP_STATS_APIKEY, id);
+      amplitude.init(process.env.REACT_APP_STATS_APIKEY, id);
     } else {
-      amplitude.getInstance().init(process.env.REACT_APP_STATS_APIKEY);
+      amplitude.init(process.env.REACT_APP_STATS_APIKEY);
     }
 
-    amplitude.getInstance().logEvent(name, {
+    amplitude.track(name, {
       version: version,
       ...properties,
     });
