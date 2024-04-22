@@ -1,3 +1,3 @@
 # Taxi on KaiOS
 
-A Simple App who display taxi ranks nearby
+A Taxi App for KaiOS. Visit [our website](https://www.kaitaxi.app/) for futher details.
