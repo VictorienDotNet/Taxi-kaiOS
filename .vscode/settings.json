@@ -4,7 +4,7 @@
     "*.webapp": "json"
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "editor.wordWrap": "on",
   "editor.formatOnSave": true,
